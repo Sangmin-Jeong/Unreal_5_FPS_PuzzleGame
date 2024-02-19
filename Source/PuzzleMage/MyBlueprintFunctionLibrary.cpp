@@ -117,24 +117,29 @@ void UMyBlueprintFunctionLibrary::SetAchievementProgress(const UObject* WorldCon
 void UMyBlueprintFunctionLibrary::LoadLevelByNameAfterDelay(const UObject* WorldContextObject, FName MapName, bool EnableLoadingScreen ,const float Delay)
 {
 	UWorld* World = const_cast<UWorld*>(WorldContextObject->GetWorld());
+	UMyGameInstance* GameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(World));
+	GameInstance->SetCurrentMapName(MapName);
+
+	// Unpause the game
+	UGameplayStatics::SetGamePaused(World, false);
 
 	UAsyncLoadingScreenLibrary::SetEnableLoadingScreen(EnableLoadingScreen);
 	
 	// Add a delay to allow the button click sound to play
 	FTimerHandle TimerHandle;
-
+	
 	World->GetTimerManager().SetTimer(TimerHandle, [World, MapName]()
 	{
-		RemoveAllPlayers(World);
+		RemoveAllPlayers(World); 
 		UGameplayStatics::OpenLevel(World, MapName);
 	}, Delay, false);
 }
 
 FName UMyBlueprintFunctionLibrary::GetCurrentMapName(const UObject* WorldContextObject)
 {
-	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(WorldContextObject);
+	const UMyGameInstance* GameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(WorldContextObject));
 	
-	return FName(GameInstance->GetWorld()->GetMapName());
+	return GameInstance->GetCurrentMapName();
 }
 
 void UMyBlueprintFunctionLibrary::QuitGame(const UObject* WorldContextObject, bool bIgnorePlatformRestrictions)

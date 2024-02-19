@@ -17,14 +17,16 @@ class PUZZLEMAGE_API ABaseHUD : public AHUD
 
 public:
 
-	TObjectPtr<UUserWidget> Widget;
+	TObjectPtr<UUserWidget> PauseWidget;
 
 	UPROPERTY(EditAnywhere, Category="Pause Screen")
-	TSubclassOf<UUserWidget> WidgetClass;
+	TSubclassOf<UUserWidget> PauseWidgetClass;
 	
 	void SubscribePauseDelegate();
 	
 	void Pause();
+
+	void UnPause();
 
 	UFUNCTION(Exec)
 	void SetControllerUIOnly();

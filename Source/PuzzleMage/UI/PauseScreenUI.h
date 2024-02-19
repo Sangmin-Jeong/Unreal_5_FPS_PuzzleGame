@@ -37,5 +37,11 @@ private:
 	void BindOnClickedEvents();
 
 	UFUNCTION()
+	void OnRestartButtonClicked();
+
+	UFUNCTION()
+	void OnMainMenuButtonClicked();
+	
+	UFUNCTION()
 	void OnQuitButtonClicked();
 };

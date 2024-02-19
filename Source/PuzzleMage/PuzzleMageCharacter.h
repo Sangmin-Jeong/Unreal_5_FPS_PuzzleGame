@@ -15,10 +15,8 @@ class UAnimMontage;
 class USoundBase;
 class UGrabber;
 
-DECLARE_DELEGATE(FOnGrabbedDelegate)
-DECLARE_DELEGATE(FOnReleasedDelegate)
 DECLARE_DELEGATE(FOnPausedDelegate)
-DECLARE_DELEGATE(FOnPushPullDelegate)
+DECLARE_DELEGATE(FOnUnPausedDelegate)
 
 UCLASS(config=Game)
 class APuzzleMageCharacter : public ACharacter
@@ -57,6 +55,9 @@ class APuzzleMageCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* PushPullAction;
 
+	/** Back Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	class UInputAction* BackAction;
 	
 public:
 	APuzzleMageCharacter();
@@ -83,12 +84,8 @@ public:
 	bool GetHasRifle();
 
 	/** Delegate */
-	FOnGrabbedDelegate OnGrabbedDelegate;
-	FOnReleasedDelegate OnReleasedDelegate;
-
 	FOnPausedDelegate OnPausedDelegate;
-	FOnPushPullDelegate OnPushPullDelegate;
-	FOnPushPullDelegate OnStopPushPullDelegate;
+	FOnUnPausedDelegate OnUnPausedDelegate;
 
 protected:
 	/** Called for movement input */
@@ -112,11 +109,15 @@ protected:
 	/** Called for stop Push and pull input */
 	void StopPushPull();
 
+	/** Called for Back input */
+	void Back();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
 
+	TObjectPtr<UGrabber> Grabber;
 public:
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }

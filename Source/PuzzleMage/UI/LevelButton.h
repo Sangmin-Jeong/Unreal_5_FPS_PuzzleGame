@@ -4,15 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "CustomButton.generated.h"
-
-class UButton;
+#include "LevelButton.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PUZZLEMAGE_API UCustomButton : public UUserWidget
+class PUZZLEMAGE_API ULevelButton : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -23,39 +21,35 @@ public:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	void SetButtonText(const FText& Text);
-	UButton* GetButton() const;
-
-	void SetPlayFirstFocusSound(bool bValue);
+	class UButton* GetButton() const;
+	void SetButtonOnClick();
+	
 	void SetIsFocused(bool bValue);
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Defaults", meta = (AllowPrivateAccess = "true"))
 	FText ButtonTextValue;
+
+	UPROPERTY(EditAnywhere, Category = "Settings", meta = (AllowPrivateAccess = "true"))
+	FName LevelName;
 	
-	UPROPERTY(EditAnywhere, Category = "Defaults", meta = (AllowPrivateAccess = "true"))
-	bool bPlayFirstFocusSound;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Button Style", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "Button Style", meta = (AllowPrivateAccess = "true"))
 	FButtonStyle DefaultStyle;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Button Style", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "Button Style", meta = (AllowPrivateAccess = "true"))
 	FButtonStyle FocusedStyle;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	class USoundBase* FocusSound;
 
+	UFUNCTION()
+	void OnButtonClicked();
 private:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* Button;
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* ButtonText;
-
-	UPROPERTY(meta = (BindWidget))
-	class UImage* SelectBarImage;
-
-	UPROPERTY(Transient, meta = (BindWidgetAnim))
-	class UWidgetAnimation* SelectBarFadeInOutAnimation;
 
 	UPROPERTY()
 	bool bIsFocused;

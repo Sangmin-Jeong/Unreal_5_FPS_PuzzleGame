@@ -3,9 +3,7 @@
 
 #include "Grabber.h"
 #include "Engine/World.h"
-#include "Kismet/GameplayStatics.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
-#include "PuzzleMage/PuzzleMageCharacter.h"
 #include "PuzzleMage/Object/BaseObjectActor.h"
 
 // Sets default values for this component's properties
@@ -28,17 +26,6 @@ void UGrabber::BeginPlay()
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 	// Avoiding Nullptr
 	check(PhysicsHandle);
-	
-	// Add this object as a listener for the delegate
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	APuzzleMageCharacter* Character = Cast<APuzzleMageCharacter>(PlayerController->GetPawn());
-	// Avoiding Nullptr
-	if (!Character) return;
-	
-	Character->OnGrabbedDelegate.BindUObject(this, &UGrabber::Grab);
-	Character->OnReleasedDelegate.BindUObject(this, &UGrabber::Release);
-	Character->OnPushPullDelegate.BindUObject(this, &UGrabber::PushPull);
-	Character->OnStopPushPullDelegate.BindUObject(this, &UGrabber::StopPushPull);
 }
 
 
@@ -103,7 +90,6 @@ void UGrabber::Release()
 	// If its a pushable object, ignore floating ability
 	ABaseObjectActor* BaseObjectActor = Cast<ABaseObjectActor>(HitResult.GetActor());
 	if (BaseObjectActor && BaseObjectActor->IsPushable()) return; 
-
 	
 	//UE_LOG(LogTemp, Display, TEXT(" RELEASE "));
 	if(PhysicsHandle->GetGrabbedComponent())
@@ -113,9 +99,7 @@ void UGrabber::Release()
 		{
 			BaseObjectActor->PlayQuitInteractionSFX();
 		}
-			
 		
-
 		// Release
 		HitResult.GetComponent()->WakeAllRigidBodies();
 		HitResult.GetComponent()->SetPhysicsLinearVelocity(FVector::Zero());
@@ -165,22 +149,30 @@ void UGrabber::Grab()
 
 void UGrabber::PushPull()
 {
-	UE_LOG(LogTemp, Display, TEXT(" PUSH PULL "));
-	if(PhysicsHandle->GetGrabbedComponent()) return;
-	
 	if(CheckLineTraceForPush(HitResult))
 	{
-		// If its not a pushable object, ignore it
 		ABaseObjectActor* BaseObjectActor = Cast<ABaseObjectActor>(HitResult.GetActor());
+		// If its not a pushable object, ignore it
 		if (BaseObjectActor && !BaseObjectActor->IsPushable()) return;
 
+		if(!BaseObjectActor->IsPushableRange())
+		{
+			isPushing = false;
+			PhysicsHandle->ReleaseComponent();
+			
+			return;
+		}
+		if(PhysicsHandle->GetGrabbedComponent()) return;
+		
+		UE_LOG(LogTemp, Display, TEXT(" PUSH PULL "));
+		BaseObjectActor->PlayInteractionVFX();
+		
 		// Debug
 		FString Name = HitResult.GetActor()->GetActorNameOrLabel();
 		UE_LOG(LogTemp, Display, TEXT("Hit Actor: %s"), *Name);
 		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 10, FColor::Blue, false, 5);
 
 		// Play SFX
-		//ABaseObjectActor* BaseObjectActor = Cast<ABaseObjectActor>(HitResult.GetActor());
 		if(BaseObjectActor)
 			BaseObjectActor->PlayInteractionSFX();
 		
@@ -198,6 +190,10 @@ void UGrabber::PushPull()
 
 void UGrabber::StopPushPull()
 {
+	if(!isPushing) return;
+
+	if(!PhysicsHandle->GetGrabbedComponent()) return;
+	
 	// If its not a pushable object, ignore it
 	ABaseObjectActor* BaseObjectActor = Cast<ABaseObjectActor>(HitResult.GetActor());
 	if (BaseObjectActor && !BaseObjectActor->IsPushable()) return;
@@ -206,17 +202,16 @@ void UGrabber::StopPushPull()
 	if(PhysicsHandle->GetGrabbedComponent())
 	{
 		// Play SFX
-		//ABaseObjectActor* BaseObjectActor = Cast<ABaseObjectActor>(HitResult.GetActor());
 		if(BaseObjectActor)
 			BaseObjectActor->PlayQuitInteractionSFX();
 
 		// Stop push or pull
-		HitResult.GetComponent()->WakeAllRigidBodies();
-		HitResult.GetComponent()->SetPhysicsLinearVelocity(FVector::Zero());
+		if(BaseObjectActor)
+			HitResult.GetComponent()->WakeAllRigidBodies();
 		PhysicsHandle->ReleaseComponent();
-
-		isPushing = false;
+		
 	}
+	isPushing = false;
 }
 
 

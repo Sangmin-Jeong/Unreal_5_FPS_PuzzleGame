@@ -21,6 +21,7 @@ void ABaseHUD::SubscribePauseDelegate()
 	if(Character)
 	{
 		Character->OnPausedDelegate.BindUObject(this, &ABaseHUD::Pause);
+		Character->OnUnPausedDelegate.BindUObject(this, &ABaseHUD::UnPause);
 		UE_LOG(LogTemp, Display, TEXT(" Character Set For Pause "));
 	}
 	else
@@ -33,28 +34,19 @@ void ABaseHUD::SubscribePauseDelegate()
 
 void ABaseHUD::Pause()
 {
-	if(!WidgetClass) return;
+	if(!PauseWidgetClass) return;
 
 	UE_LOG(LogTemp, Display, TEXT(" PAUSE "));
 	
 	if(bIsDisplayed)
 	{
-		// Hide Widget
-		Widget->RemoveFromParent();
-		bIsDisplayed = false;
-		
-		// Set Controller
-		if(PlayerController)
-		{
-			UGameplayStatics::SetGamePaused(GetWorld(), bIsDisplayed);
-			SetControllerGameOnly();
-		}
+		UnPause();
 	}
 	else
 	{
 		// Display Pause Widget
-		Widget = CreateWidget<UUserWidget>(GetWorld(), WidgetClass);
-		Widget->AddToViewport();
+		PauseWidget = CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass);
+		PauseWidget->AddToViewport();
 		bIsDisplayed = true;
 		
 		// Set Controller
@@ -65,6 +57,20 @@ void ABaseHUD::Pause()
 		}
 	}
 	
+}
+
+void ABaseHUD::UnPause()
+{
+	// Hide Widget
+	PauseWidget->RemoveFromParent();
+	bIsDisplayed = false;
+	
+	// Set Controller
+	if(PlayerController)
+	{
+		UGameplayStatics::SetGamePaused(GetWorld(), bIsDisplayed);
+		SetControllerGameOnly();
+	}
 }
 
 void ABaseHUD::SetControllerUIOnly()

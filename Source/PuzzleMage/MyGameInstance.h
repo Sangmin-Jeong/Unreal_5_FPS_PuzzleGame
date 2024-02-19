@@ -12,16 +12,17 @@
 UCLASS()
 class PUZZLEMAGE_API UMyGameInstance : public UGameInstance
 {
-	GENERATED_BODY()
+	GENERATED_BODY()	
 
 	int32 ActiveControllerId = -1;
 
 	bool bDidControllerDisconnectPauseGame = false;
 	
-	/*UPROPERTY()
-	UControllerDisconnectedWidget* ControllerDisconnectedWidget;*/
-	/*UPROPERTY(EditAnywhere, Category = "Widgets")
-	TSubclassOf<class UControllerDisconnectedWidget> ControllerDisconnectedWidgetClass;*/
+	UPROPERTY()
+	class UControllerDisconnectedWidget* ControllerDisconnectedWidget;
+	
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	TSubclassOf<class UControllerDisconnectedWidget> ControllerDisconnectedWidgetClass;
 
 	UFUNCTION()
 	void OnControllerChanged(EInputDeviceConnectionState ConnectionState, FPlatformUserId UserId, FInputDeviceId InputDeviceId);
@@ -40,4 +41,23 @@ public:
 
 	void SetActiveControllerId(int32 ControllerId);
 	int32 GetActiveControllerId() const;
+
+	UFUNCTION()
+	class UGameData* GetGameData() const;
+
+	UFUNCTION()
+	FName GetCurrentMapName() const;
+
+	UFUNCTION()
+	void SetCurrentMapName(FName MapName);
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Game Data")
+	TSoftObjectPtr<class UGameData> GameDataClass;
+
+	UPROPERTY()
+	UGameData* GameData;
+
+	UPROPERTY()
+	FName CurrentMapName;
 };

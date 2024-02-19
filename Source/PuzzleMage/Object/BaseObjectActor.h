@@ -51,9 +51,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StopInteractionVFX();
 
-
+	//For movable object
 	UFUNCTION(BlueprintCallable, Category = "Pushable")
 	bool IsPushable() { return bIsPushable; }
+	
+	UFUNCTION(BlueprintCallable, Category = "Pushable")
+	bool IsPushableRange() {return bIsPushableRange; }
+	
+	UFUNCTION(BlueprintCallable, Category = "Pushable")
+	void SetPushableRange(bool newValue);
+
 	
 protected:
 	virtual void BeginPlay() override;
@@ -66,6 +73,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pushable")
 	bool bIsPushable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PushableRange")
+	bool bIsPushableRange;
 
 private:
 

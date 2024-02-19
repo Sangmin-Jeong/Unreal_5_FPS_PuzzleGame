@@ -19,8 +19,6 @@ ABaseObjectActor::ABaseObjectActor()
 	// Static Mesh
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
 	SetRootComponent(StaticMeshComponent);
-	StaticMeshComponent->SetSimulatePhysics(true);
-	StaticMeshComponent->SetMassScale(NAME_None,5);
 	
 	// Collider
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Component"));
@@ -30,7 +28,8 @@ ABaseObjectActor::ABaseObjectActor()
 	ParticleSystemComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Particle System Component"));
 	ParticleSystemComponent->SetupAttachment(GetRootComponent());
 	
-	bIsPushable = false; 
+	bIsPushable = false;
+	bIsPushableRange = false;
 }
 
 // Called when the game starts or when spawned
@@ -39,8 +38,9 @@ void ABaseObjectActor::BeginPlay()
 	Super::BeginPlay();
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ABaseObjectActor::OnOverlap);
 	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ABaseObjectActor::EndOverlap);
-
-
+	
+	StaticMeshComponent->SetSimulatePhysics(true);
+	StaticMeshComponent->SetMassScale(NAME_None,5);
 }
 
 void ABaseObjectActor::PlayInteractionSFX()
@@ -82,6 +82,8 @@ void ABaseObjectActor::OnOverlap(UPrimitiveComponent* OverlapComponent, AActor* 
 	if(Actor)
 	{
 		UE_LOG(LogTemp, Display, TEXT("PLAYER IN     !!!!"));
+
+		SetPushableRange(true);
 	}
 }
 
@@ -90,6 +92,23 @@ void ABaseObjectActor::EndOverlap(UPrimitiveComponent* OverlapComponent, AActor*
 {
 	AActor* Actor = Cast<APuzzleMageCharacter>(OtherActor);
 	if(Actor)
+	{
 		UE_LOG(LogTemp, Display, TEXT("PLAYER OUT   !!!!"));
+
+		SetPushableRange(false);
+	}
 }
+
+void ABaseObjectActor::SetPushableRange(bool newValue)
+{
+	bIsPushableRange = newValue;
+
+	if(bIsPushableRange)
+	UE_LOG(LogTemp, Display, TEXT("Within PushableRange "));
+
+	if(!bIsPushableRange)
+		UE_LOG(LogTemp, Display, TEXT("Out of PushableRange "));
+}
+
+
 

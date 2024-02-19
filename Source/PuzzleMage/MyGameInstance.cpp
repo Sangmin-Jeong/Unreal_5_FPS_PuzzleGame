@@ -6,7 +6,10 @@
 #include "CustomGameViewportClient.h"
 #include "GenericPlatform/GenericPlatformInputDeviceMapper.h"
 #include "MyBlueprintFunctionLibrary.h"
+#include "Blueprint/UserWidget.h"
+#include "Data/GameData.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/ControllerDisconnectedWidget.h"
 
 class UCustomGameViewportClient;
 
@@ -18,6 +21,11 @@ void UMyGameInstance::Init()
 
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UMyGameInstance::BeginLoadingScreen);
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UMyGameInstance::EndLoadingScreen);
+
+	if (GameDataClass)
+	{
+		GameData = GameDataClass.LoadSynchronous();
+	}
 }
 
 void UMyGameInstance::Shutdown()
@@ -35,8 +43,23 @@ int32 UMyGameInstance::GetActiveControllerId() const
 	return ActiveControllerId;
 }
 
+UGameData* UMyGameInstance::GetGameData() const
+{
+	return GameData;
+}
+
+FName UMyGameInstance::GetCurrentMapName() const
+{
+	return CurrentMapName;
+}
+
+void UMyGameInstance::SetCurrentMapName(FName MapName)
+{
+	CurrentMapName = MapName;
+}
+
 void UMyGameInstance::OnControllerChanged(EInputDeviceConnectionState ConnectionState, FPlatformUserId UserId,
-	FInputDeviceId InputDeviceId)
+                                          FInputDeviceId InputDeviceId)
 {
 	FString UserId_Text;
 	if (UserId == PLATFORMUSERID_NONE)
@@ -70,7 +93,7 @@ void UMyGameInstance::OnControllerChanged(EInputDeviceConnectionState Connection
 					UGameplayStatics::SetGamePaused(this, false);
 					bDidControllerDisconnectPauseGame = false;
 				}
-				// ControllerDisconnectedWidget->RemoveFromParent();
+				ControllerDisconnectedWidget->RemoveFromParent();
 			}
 			else
 			{
@@ -81,20 +104,20 @@ void UMyGameInstance::OnControllerChanged(EInputDeviceConnectionState Connection
 					bDidControllerDisconnectPauseGame = true;
 				}		
 		
-				// if (ControllerDisconnectedWidgetClass)
-				// {
-				// 	if (!UGameplayStatics::IsGamePaused(this))
-				// 	{
-				// 		UGameplayStatics::SetGamePaused(this, true);
-				// 		bDidControllerDisconnectPauseGame = true;
-				// 	}
-				// 	ControllerDisconnectedWidget = CreateWidget<UControllerDisconnectedWidget>(ActivePC, ControllerDisconnectedWidgetClass);
-				// 	ControllerDisconnectedWidget->AddToViewport();
-				// }
-				// else
-				// {
-				// 	UE_LOG(LogTemp, Warning, TEXT("ControllerDisconnectedWidgetClass is nullptr"));
-				// }
+				if (ControllerDisconnectedWidgetClass)
+				{
+					if (!UGameplayStatics::IsGamePaused(this))
+					{
+						UGameplayStatics::SetGamePaused(this, true);
+						bDidControllerDisconnectPauseGame = true;
+					}
+					ControllerDisconnectedWidget = CreateWidget<UControllerDisconnectedWidget>(ActivePC, ControllerDisconnectedWidgetClass);
+					ControllerDisconnectedWidget->AddToViewport();
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("ControllerDisconnectedWidgetClass is nullptr"));
+				}
 			}
 		}
 	}

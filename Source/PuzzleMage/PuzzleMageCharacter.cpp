@@ -8,7 +8,10 @@
 #include "EnhancedInputComponent.h"
 #include "GamePlayerController.h"
 #include "EnhancedInputSubsystems.h"
+#include "Component/Grabber.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/BaseHUD.h"
+#include "UI/PauseScreenUI.h"
 
 //////////////////////////////////////////////////////////////////////////
 // APuzzleMageCharacter
@@ -35,6 +38,11 @@ APuzzleMageCharacter::APuzzleMageCharacter()
 	Mesh1P->CastShadow = false;
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+
+	// Grabber
+	Grabber = CreateDefaultSubobject<UGrabber>(TEXT("Grabber"));
+	Grabber->SetupAttachment(FirstPersonCameraComponent);
+
 }
 
 void APuzzleMageCharacter::BeginPlay()
@@ -82,6 +90,16 @@ void APuzzleMageCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 		EnhancedInputComponent->BindAction(PushPullAction, ETriggerEvent::Completed, this, &APuzzleMageCharacter::StopPushPull);
 		EnhancedInputComponent->BindAction(PushPullAction, ETriggerEvent::Canceled, this, &APuzzleMageCharacter::StopPushPull);
 
+		EnhancedInputComponent->BindAction(BackAction, ETriggerEvent::Triggered, this, &APuzzleMageCharacter::Back);
+	}
+
+	// Bind to HUD
+	AGamePlayerController* PlayerController = Cast<AGamePlayerController>(Controller);
+	if (!PlayerController) return;
+	
+	if (ABaseHUD* BaseHUD = Cast<ABaseHUD>(PlayerController->GetHUD()))
+	{
+		BaseHUD->SubscribePauseDelegate();
 	}
 }
 
@@ -113,28 +131,32 @@ void APuzzleMageCharacter::Look(const FInputActionValue& Value)
 
 void APuzzleMageCharacter::Grab()
 {
-	OnGrabbedDelegate.ExecuteIfBound();
+	Grabber->Grab();
 }
 
 void APuzzleMageCharacter::Release()
 {
-	OnReleasedDelegate.ExecuteIfBound();
+	Grabber->Release();
 }
 
 void APuzzleMageCharacter::Pause()
 {
-	UE_LOG(LogTemp, Display, TEXT(" Execute PAUSE "));
 	OnPausedDelegate.ExecuteIfBound();
 }
 
 void APuzzleMageCharacter::PushPull()
 {
-	OnPushPullDelegate.ExecuteIfBound();
+	Grabber->PushPull();
 }
 
 void APuzzleMageCharacter::StopPushPull()
 {
-	OnStopPushPullDelegate.ExecuteIfBound();
+	Grabber->StopPushPull();
+}
+
+void APuzzleMageCharacter::Back()
+{
+	OnUnPausedDelegate.ExecuteIfBound();
 }
 
 void APuzzleMageCharacter::SetHasRifle(bool bNewHasRifle)

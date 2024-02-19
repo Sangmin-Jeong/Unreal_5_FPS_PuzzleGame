@@ -29,10 +29,14 @@ private:
 	class UCustomButton* AchievementsButton;
 
 	UPROPERTY(meta = (BindWidget))
+	class UCustomButton* ControlsButton;
+
+	UPROPERTY(meta = (BindWidget))
 	class UCustomButton* CreditsButton;
 
 	UPROPERTY(meta = (BindWidget))
 	class UCustomButton* OptionsButton;
+	
 	
 	UPROPERTY(meta = (BindWidget))
 	class UCustomButton* QuitButton;
@@ -44,6 +48,12 @@ private:
 	void OnNewGameButtonClicked();
 
 	UFUNCTION()
+	void OnCreditsButtonClicked();
+
+	UFUNCTION()
 	void OnQuitButtonClicked();
+
+	UFUNCTION()
+	void OnControlsButtonClicked();
 	
 };

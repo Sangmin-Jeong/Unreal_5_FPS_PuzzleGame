@@ -20,16 +20,12 @@ void APuzzleMageGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UMyGameInstance* GameInstanceRef = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (GameInstanceRef)
+	if (UMyGameInstance* GameInstanceRef = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(this)))
 	{
 		if (GameInstanceRef->GetActiveControllerId() > -1)
 		{
-			APlayerController* PC = UGameplayStatics::CreatePlayer(this, GameInstanceRef->GetActiveControllerId());
-			if (ABaseHUD* BaseHUD = Cast<ABaseHUD>(PC->GetHUD()))
-			{
-				BaseHUD->SubscribePauseDelegate();
-			}
+			AGamePlayerController* PC = Cast<AGamePlayerController>(UGameplayStatics::CreatePlayer(this, GameInstanceRef->GetActiveControllerId()));
+			if (!PC) return;
 
 			FInputModeGameAndUI InputMode;
 			PC->SetInputMode(InputMode);

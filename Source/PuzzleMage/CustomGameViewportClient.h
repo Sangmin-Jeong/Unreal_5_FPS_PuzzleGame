@@ -27,5 +27,5 @@ private:
 	bool bToBlack : 1;
 	float FadeAlpha;
 	float FadeStartTime;
-	float FadeDuration = 2.0f;
+	float FadeDuration = 0.8f;
 };
