@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PauseScreenUI.h"
 #include "GameFramework/HUD.h"
 #include "BaseHUD.generated.h"
 
@@ -16,8 +17,8 @@ class PUZZLEMAGE_API ABaseHUD : public AHUD
 	GENERATED_BODY()
 
 public:
-
-	TObjectPtr<UUserWidget> PauseWidget;
+	UPROPERTY()
+	UPauseScreenUI* PauseWidget;
 
 	UPROPERTY(EditAnywhere, Category="Pause Screen")
 	TSubclassOf<UUserWidget> PauseWidgetClass;

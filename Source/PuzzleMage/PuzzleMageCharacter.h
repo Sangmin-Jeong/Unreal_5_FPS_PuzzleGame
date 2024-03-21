@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CineCameraActor.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "Camera/CameraActor.h"
 #include "PuzzleMageCharacter.generated.h"
 
 class UInputComponent;
@@ -55,15 +57,24 @@ class APuzzleMageCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* PushPullAction;
 
-	/** Back Input Action */
+	/** Back Right Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputAction* BackAction;
+	class UInputAction* BackActionRight;
+
+	/** Back Bottom Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	class UInputAction* BackActionBottom;
+
+	/** Change Camera View Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	class UInputAction* ChangeCameraAction;
 	
 public:
 	APuzzleMageCharacter();
 
 protected:
 	virtual void BeginPlay();
+	virtual void Tick(float DeltaTime) override;
 
 public:
 		
@@ -86,6 +97,40 @@ public:
 	/** Delegate */
 	FOnPausedDelegate OnPausedDelegate;
 	FOnUnPausedDelegate OnUnPausedDelegate;
+
+
+	UFUNCTION(BlueprintCallable, Category = "Change Camera")
+	void ChangeCameraView();
+
+	UFUNCTION(BlueprintCallable, Category = "Change Camera")
+	void ResetCameraView();
+
+	UFUNCTION(BlueprintCallable, Category = "Change Camera")
+	void ActiveCineCamera();
+	
+	UPROPERTY(VisibleAnywhere, Category = "Change Camera")
+	TSubclassOf<ACameraActor> CameraActorClass = ACameraActor::StaticClass();
+
+	UPROPERTY(VisibleAnywhere, Category = "Change Camera")
+	TObjectPtr<ACineCameraActor> CineCamera;
+
+	UPROPERTY(EditAnywhere, Category = "Change Camera")
+	float DelayTime = 2.0f;
+	
+	FTimerHandle TimerHandle;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= Achievement, meta = (AllowPrivateAccess = "true"))
+	float StayStillAchievementTime = 30.0f;
+	float StayStillTimeCounter = 0;
+	
+	bool StayStillAchievementUnlocked = false;
+	bool PauseAchievementUnlocked = false;
+	bool PushAchievementUnlocked = false;
+	bool GrabAchievementUnlocked = false;
+	bool MagicRuneAchievementUnlocked = false;
+
+	UFUNCTION(BlueprintCallable, Category = "Achievement")
+	void ResetStillAchievementTimer();
 
 protected:
 	/** Called for movement input */
@@ -112,18 +157,22 @@ protected:
 	/** Called for Back input */
 	void Back();
 
+	/** Called for Change camera input */
+	void ChangeToMapCamera();
+	void ChangeToDefaultCamera();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
-
-	TObjectPtr<UGrabber> Grabber;
+	
 public:
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-	
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UGrabber> Grabber;
 };
 

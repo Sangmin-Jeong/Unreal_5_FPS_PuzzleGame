@@ -26,12 +26,14 @@ public:
 	
 	void SetIsFocused(bool bValue);
 
+	void SetLevelDataAsset(class ULevelDataAsset* DataAsset);
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Defaults", meta = (AllowPrivateAccess = "true"))
 	FText ButtonTextValue;
 
 	UPROPERTY(EditAnywhere, Category = "Settings", meta = (AllowPrivateAccess = "true"))
-	FName LevelName;
+	class ULevelDataAsset* LevelDataAsset;
 	
 	UPROPERTY(EditAnywhere, Category = "Button Style", meta = (AllowPrivateAccess = "true"))
 	FButtonStyle DefaultStyle;
@@ -44,6 +46,15 @@ private:
 
 	UFUNCTION()
 	void OnButtonClicked();
+
+	UFUNCTION()
+	void AnimateButtonOutline();
+
+	UFUNCTION()
+	void SetLockedButton();
+
+	UFUNCTION()
+	void SetUnlockedButton();
 private:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* Button;
@@ -51,8 +62,16 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* ButtonText;
 
+	UPROPERTY(meta = (BindWidget))
+	class UImage* LevelIcon;
+
+	UPROPERTY(meta = (BindWidget))
+	class UImage* LockedBackground;
+
 	UPROPERTY()
 	bool bIsFocused;
 
 	void PlaySound();
+
+	FLinearColor CurrentOutlineColor;
 };

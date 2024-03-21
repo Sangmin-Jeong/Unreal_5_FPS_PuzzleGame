@@ -6,6 +6,7 @@
 #include "MyGameInstance.h"
 #include "PuzzleMageCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Object/MagicRune.h"
 #include "UI/BaseHUD.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -39,5 +40,32 @@ void APuzzleMageGameMode::BeginPlay()
 	{
 		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, TEXT("Game Instance is not set!"));
 	}
+
+	InitializeMagicRune();
+}
+
+void APuzzleMageGameMode::OpenDoor()
+{
+	if(!bIsAllMagicRuneActivated) return;
+
+	if(Door)
+	{
+		Door->SetShouldMove(true);
+		
+		ExecuteFinalDoorDelegate();
+	}
+}
+
+void APuzzleMageGameMode::ExecuteFinalDoorDelegate()
+{
+	if(Door)
+	if(Door->bIsFinalDoor)
+		FinalDoorOpenedDelegate.ExecuteIfBound();
+}
+
+void APuzzleMageGameMode::InitializeMagicRune()
+{
+	NextMagicRuneIndex = 0;
+	bIsAllMagicRuneActivated = false;
 }
 

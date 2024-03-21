@@ -23,4 +23,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+private:
+	// Sound to play when the pressure plate is activated or deactivated, not used for now
+	UPROPERTY(EditDefaultsOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+	class USoundCue* SwitchActivationSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+	class USoundCue* SwitchDeactivationSound;
 };

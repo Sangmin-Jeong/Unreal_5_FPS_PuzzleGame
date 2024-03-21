@@ -17,6 +17,12 @@ class PUZZLEMAGE_API UPauseScreenUI : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
+	UFUNCTION()
+	bool IsAtPauseMenu();
+
+	UFUNCTION()
+	void ShowPauseMenuPanel();
+
 private:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* RunningTimeText;
@@ -33,8 +39,20 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UCustomButton* QuitButton;
 
+	UPROPERTY(meta = (BindWidget))
+	class UCanvasPanel* PauseMenuPanel;
+
+	UPROPERTY(meta = (BindWidget))
+	class UCanvasPanel* OptionsPanel;
+
+	UPROPERTY(meta = (BindWidget))
+	class UOptionsUI* OptionsUI;
+
 	UFUNCTION()
 	void BindOnClickedEvents();
+
+	UFUNCTION()
+	void OnOptionsButtonClicked();
 
 	UFUNCTION()
 	void OnRestartButtonClicked();

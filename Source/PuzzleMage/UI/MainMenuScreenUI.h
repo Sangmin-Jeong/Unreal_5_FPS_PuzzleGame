@@ -20,10 +20,13 @@ public:
 
 private:
 	UPROPERTY(meta = (BindWidget))
+	class UCustomButton* ContinueButton;
+	
+	UPROPERTY(meta = (BindWidget))
 	class UCustomButton* NewGameButton;
 
 	UPROPERTY(meta = (BindWidget))
-	class UCustomButton* LoadGameButton;
+	class UCustomButton* SelectLevelButton;
 
 	UPROPERTY(meta = (BindWidget))
 	class UCustomButton* AchievementsButton;
@@ -37,7 +40,6 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UCustomButton* OptionsButton;
 	
-	
 	UPROPERTY(meta = (BindWidget))
 	class UCustomButton* QuitButton;
 
@@ -45,15 +47,26 @@ private:
 	void BindOnClickedEvents();
 
 	UFUNCTION()
+	void OnContinueButtonClicked();
+
+	UFUNCTION()
 	void OnNewGameButtonClicked();
+	
+	UFUNCTION()
+	void OnSelectLevelButtonClicked();
 
 	UFUNCTION()
 	void OnCreditsButtonClicked();
 
 	UFUNCTION()
+	void OnOptionsButtonClicked();
+	
+	UFUNCTION()
 	void OnQuitButtonClicked();
 
 	UFUNCTION()
 	void OnControlsButtonClicked();
-	
+
+	UFUNCTION()
+	void OnAchievementsButtonClicked();
 };

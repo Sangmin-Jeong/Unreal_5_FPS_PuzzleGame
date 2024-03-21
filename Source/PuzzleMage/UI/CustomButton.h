@@ -23,9 +23,13 @@ public:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	void SetButtonText(const FText& Text);
+
+	UFUNCTION(BlueprintCallable)
 	UButton* GetButton() const;
 
 	void SetPlayFirstFocusSound(bool bValue);
+
+	UFUNCTION(BlueprintCallable)
 	void SetIsFocused(bool bValue);
 
 private:

@@ -3,6 +3,9 @@
 
 #include "Door.h"
 
+#include "PuzzleMageGameMode.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 ADoor::ADoor()
 {
@@ -15,6 +18,17 @@ ADoor::ADoor()
 void ADoor::BeginPlay()
 {
 	Super::BeginPlay();
+	OriginalLocation = GetActorLocation();
+	if(bIsFinalDoor)
+	{
+		if(UGameInstance* GameInstance = GetGameInstance())
+		{
+			if(APuzzleMageGameMode* GameMode = Cast<APuzzleMageGameMode>(UGameplayStatics::GetGameMode(GameInstance)))
+			{
+				GameMode->Door = this;
+			}
+		}
+	}
 	
 }
 
@@ -22,6 +36,22 @@ void ADoor::BeginPlay()
 void ADoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	FVector TargetLocation = OriginalLocation;
+	if(ShouldMove)
+	{
+		TargetLocation = OriginalLocation + MoveOffset;
+	}
+	FVector CurrentLocation = GetActorLocation();
+	float Speed = MoveOffset.Length() / MoveTime;
+	
+	FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, TargetLocation, DeltaTime, Speed);
+	SetActorLocation(NewLocation);
 
+}
+
+void ADoor::SetShouldMove(bool NewShouldMove)
+{
+	ShouldMove = NewShouldMove;
 }
 

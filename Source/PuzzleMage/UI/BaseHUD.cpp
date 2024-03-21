@@ -35,8 +35,6 @@ void ABaseHUD::SubscribePauseDelegate()
 void ABaseHUD::Pause()
 {
 	if(!PauseWidgetClass) return;
-
-	UE_LOG(LogTemp, Display, TEXT(" PAUSE "));
 	
 	if(bIsDisplayed)
 	{
@@ -45,7 +43,7 @@ void ABaseHUD::Pause()
 	else
 	{
 		// Display Pause Widget
-		PauseWidget = CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass);
+		PauseWidget = CreateWidget<UPauseScreenUI>(GetWorld(), PauseWidgetClass);
 		PauseWidget->AddToViewport();
 		bIsDisplayed = true;
 		
@@ -61,8 +59,17 @@ void ABaseHUD::Pause()
 
 void ABaseHUD::UnPause()
 {
+	if (!PauseWidget) return;
+	
 	// Hide Widget
+	if (!PauseWidget->IsAtPauseMenu())
+	{
+		PauseWidget->ShowPauseMenuPanel();
+		return;
+	}
+	
 	PauseWidget->RemoveFromParent();
+	PauseWidget = nullptr;
 	bIsDisplayed = false;
 	
 	// Set Controller

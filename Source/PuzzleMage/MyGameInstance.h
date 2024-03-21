@@ -3,8 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/LevelDataAsset.h"
 #include "Engine/GameInstance.h"
+#include "Kismet/GameplayStatics.h"
 #include "MyGameInstance.generated.h"
+
+UENUM()
+enum class EAudioType
+{
+	Master,
+	Music,
+	SFX
+};
 
 /**
  * 
@@ -24,6 +34,12 @@ class PUZZLEMAGE_API UMyGameInstance : public UGameInstance
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	TSubclassOf<class UControllerDisconnectedWidget> ControllerDisconnectedWidgetClass;
 
+	UPROPERTY()
+	class UAutoSaveWidget* AutoSaveWidget;
+
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	TSubclassOf<class UAutoSaveWidget> AutoSaveWidgetClass;
+
 	UFUNCTION()
 	void OnControllerChanged(EInputDeviceConnectionState ConnectionState, FPlatformUserId UserId, FInputDeviceId InputDeviceId);
 
@@ -35,7 +51,7 @@ class PUZZLEMAGE_API UMyGameInstance : public UGameInstance
 	
 public:
 	static const int32 MAX_CONTROLLERS = 4;
-
+	
 	virtual void Init() override;
 	virtual void Shutdown() override;
 
@@ -46,18 +62,93 @@ public:
 	class UGameData* GetGameData() const;
 
 	UFUNCTION()
-	FName GetCurrentMapName() const;
+	class UUIDataAsset* GetUIDataAsset() const;
 
 	UFUNCTION()
-	void SetCurrentMapName(FName MapName);
+	class UGameUserSettings* GetGameUserSettings() const;
 
+	UFUNCTION()
+	bool HasSaveData() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SaveGameData();
+
+	UFUNCTION()
+	void ResetGameData();
+
+	UFUNCTION()
+	FString GetCurrentMapName() const;
+
+	UFUNCTION(BlueprintCallable)
+	ULevelDataAsset* GetCurrentLevelDataAsset() const;
+
+	UFUNCTION()
+	ULevelDataAsset* GetLastUnlockedLevelDataAsset() const;
+
+	UFUNCTION()
+	ULevelDataAsset* GetFirstLevelDataAsset() const;
+
+	UFUNCTION(BlueprintCallable)
+	ULevelDataAsset* GetNextLevelDataAsset() const;
+	
+	UFUNCTION()
+	void SetCurrentMapName(FString MapName);
+
+	UFUNCTION()
+	void SetCurrentLevelDataAsset(ULevelDataAsset* LevelDataAsset);
+	
+	void InitializeSoundClasses();
+
+	UFUNCTION()
+	float GetAudioVolume(EAudioType AudioType) const;
+
+	UFUNCTION()
+	void SetAudioVolume(EAudioType AudioType, float Volume);
 private:
-	UPROPERTY(EditAnywhere, Category = "Game Data")
-	TSoftObjectPtr<class UGameData> GameDataClass;
-
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = "Game Data", meta = (AllowPrivateAccess = "true"))
 	UGameData* GameData;
 
+	UPROPERTY(EditAnywhere, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+	USoundClass* MasterSoundClass;
+
+	UPROPERTY(EditAnywhere, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+	USoundClass* MusicSoundClass;
+
+	UPROPERTY(EditAnywhere, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+	USoundClass* SFXSoundClass;
+
+	UPROPERTY(EditAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	class UUIDataAsset* XboxUIDataAsset;
+
+	UPROPERTY(EditAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	class UUIDataAsset* PS5UIDataAsset;
+
+	UPROPERTY(EditAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	class UUIDataAsset* SwitchUIDataAsset;
+
 	UPROPERTY()
-	FName CurrentMapName;
+	FString CurrentMapName;
+
+	UPROPERTY()
+	ULevelDataAsset* CurrentLevelDataAsset;
+
+	UPROPERTY()
+	UGameUserSettings* GameUserSettings;
+
+	FTimerHandle AutoSaveTimerHandle;
+	FAsyncSaveGameToSlotDelegate OnSaveGameToSlotCompleteDelegate;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	bool bShowAutoSaveTip;
+
+	UFUNCTION()
+	void OnSaveGameToSlotComplete(const FString& SlotName, int32 UserIndex, const bool bSuccess);
+
+	void InitializeConsoleCommands();
+
+	UFUNCTION()
+	void UnlockAllLevels();
+
+	UFUNCTION()
+	void GiveUp();
 };

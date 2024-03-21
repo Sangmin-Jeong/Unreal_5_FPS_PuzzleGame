@@ -33,13 +33,62 @@ void UGrabber::BeginPlay()
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
+	if(CheckLineTrace(HitResult))
+	{
+		//Highlighting
+		if(HighlightingActor)
+		if(HitResult.GetActor() != HighlightingActor)
+		{
+			HighlightingActor->UnHighlighting();
+		}
+		
+		HighlightingActor = Cast<ABaseObjectActor>(HitResult.GetActor());
+		
+		if(HighlightingActor)
+		{
+			HighlightingActor->Highlighting();
+		}
+	}
+	else
+	{
+		//UnHighlighting
+		if(HighlightingActor)
+		{
+			if(HighlightingActor != HitResult.GetActor())
+			{
+				HighlightingActor->UnHighlighting();
+			}
+		}
+	}
+	
+	//UE_LOG(LogTemp, Error, TEXT("Player: %s"), *GetComponentLocation().ToString());
 
 	if(PhysicsHandle->GetGrabbedComponent())
 	{
 		if(isGrabbing)
 		{
-			// Holding the Grabbed Object
-			FVector TargetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
+			FVector Direction = PhysicsHandle->GetGrabbedComponent()->GetComponentLocation() - GetComponentLocation();
+			FVector TargetLocation;
+			float Distance = Direction.Length();
+			//UE_LOG(LogTemp, Error, TEXT("Distance: %f"), Distance);
+
+			// Distance less than Max Hold Distance
+			if(Distance < HoldDistance && Distance > MinHoldDistance)
+			{
+				TargetLocation = GetComponentLocation() + GetForwardVector() * Distance;
+			}
+			// Distance grater than Max Hold Distance
+			else if(Distance > HoldDistance)
+			{
+				TargetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
+			}
+			// Distance less than Min Hold Distance
+			else if(Distance < MinHoldDistance)
+			{
+				TargetLocation = GetComponentLocation() + GetForwardVector() * MinHoldDistance;
+			}
+			
 			PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, GetComponentRotation());
 		}
 
@@ -56,7 +105,7 @@ bool UGrabber::CheckLineTrace(FHitResult& OutHitResult) const
 {
 	FVector Start = GetComponentLocation();
 	FVector End = Start + GetForwardVector() * MaxGrabDistance;
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red);
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Red);
 
 	FCollisionShape Sphere = FCollisionShape::MakeSphere(GrabRadius);
 	return GetWorld()->SweepSingleByChannel(
@@ -72,7 +121,7 @@ bool UGrabber::CheckLineTraceForPush(FHitResult& OutHitResult) const
 {
 	FVector Start = GetComponentLocation();
 	FVector End = Start + GetForwardVector() * MaxPushDistance;
-	DrawDebugLine(GetWorld(), Start, End, FColor::Blue);
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Blue);
 
 	FCollisionShape Sphere = FCollisionShape::MakeSphere(PushRadius);
 	return GetWorld()->SweepSingleByChannel(
@@ -101,8 +150,11 @@ void UGrabber::Release()
 		}
 		
 		// Release
-		HitResult.GetComponent()->WakeAllRigidBodies();
-		HitResult.GetComponent()->SetPhysicsLinearVelocity(FVector::Zero());
+		if(HitResult.GetComponent())
+		{
+			HitResult.GetComponent()->WakeAllRigidBodies();
+			HitResult.GetComponent()->SetPhysicsLinearVelocity(FVector::Zero());
+		}
 		PhysicsHandle->ReleaseComponent();
 
 		isGrabbing = false;
@@ -121,12 +173,11 @@ void UGrabber::Grab()
 		if (BaseObjectActor && BaseObjectActor->IsPushable()) return; 
 	
 		// Debug
-		FString Name = HitResult.GetActor()->GetActorNameOrLabel();
-		UE_LOG(LogTemp, Display, TEXT("Hit Actor: %s"), *Name);
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 10, FColor::Red, false, 5);
-
+		// FString Name = HitResult.GetActor()->GetActorNameOrLabel();
+		// //UE_LOG(LogTemp, Display, TEXT("Hit Actor: %s"), *Name);
+		// DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 10, FColor::Red, false, 5);
+		
 		// Play SFX
-		//ABaseObjectActor* BaseObjectActor = Cast<ABaseObjectActor>(HitResult.GetActor());
 		if(BaseObjectActor)
 		{
 			BaseObjectActor->PlayInteractionSFX();
@@ -153,37 +204,41 @@ void UGrabber::PushPull()
 	{
 		ABaseObjectActor* BaseObjectActor = Cast<ABaseObjectActor>(HitResult.GetActor());
 		// If its not a pushable object, ignore it
-		if (BaseObjectActor && !BaseObjectActor->IsPushable()) return;
 
+		if (!BaseObjectActor) return;
+		if (BaseObjectActor && !BaseObjectActor->IsPushable()) return;
+	
 		if(!BaseObjectActor->IsPushableRange())
 		{
-			isPushing = false;
-			PhysicsHandle->ReleaseComponent();
-			
+			if(PhysicsHandle->GetGrabbedComponent())
+			{
+				isPushing = false;
+				PhysicsHandle->ReleaseComponent();
+			}
 			return;
 		}
 		if(PhysicsHandle->GetGrabbedComponent()) return;
 		
-		UE_LOG(LogTemp, Display, TEXT(" PUSH PULL "));
-		BaseObjectActor->PlayInteractionVFX();
-		
 		// Debug
-		FString Name = HitResult.GetActor()->GetActorNameOrLabel();
-		UE_LOG(LogTemp, Display, TEXT("Hit Actor: %s"), *Name);
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 10, FColor::Blue, false, 5);
-
-		// Play SFX
-		if(BaseObjectActor)
-			BaseObjectActor->PlayInteractionSFX();
+		// FString Name = HitResult.GetActor()->GetActorNameOrLabel();
+		// UE_LOG(LogTemp, Display, TEXT("Hit Actor: %s"), *Name);
+		// DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 10, FColor::Blue, false, 5);
 		
-		// Push
-		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
-		HitComponent->WakeAllRigidBodies();
-		PhysicsHandle->GrabComponentAtLocation(
-			HitComponent,
-			NAME_None,
-			HitResult.ImpactPoint
-		);
+		if(BaseObjectActor)
+		{
+			BaseObjectActor->PlayInteractionVFX();
+			BaseObjectActor->PlayInteractionSFX();
+			BaseObjectActor->SetTransparentMaterial();
+			
+			// Push
+			UPrimitiveComponent* HitComponent = HitResult.GetComponent();
+			HitComponent->WakeAllRigidBodies();
+			PhysicsHandle->GrabComponentAtLocation(
+				HitComponent,
+				NAME_None,
+				HitResult.ImpactPoint
+			);
+		}
 		isPushing = true;
 	}
 }
@@ -191,28 +246,45 @@ void UGrabber::PushPull()
 void UGrabber::StopPushPull()
 {
 	if(!isPushing) return;
-
 	if(!PhysicsHandle->GetGrabbedComponent()) return;
 	
 	// If its not a pushable object, ignore it
 	ABaseObjectActor* BaseObjectActor = Cast<ABaseObjectActor>(HitResult.GetActor());
+	if (!BaseObjectActor) return;
 	if (BaseObjectActor && !BaseObjectActor->IsPushable()) return;
 	
 	UE_LOG(LogTemp, Display, TEXT(" Stop Pushing"));
 	if(PhysicsHandle->GetGrabbedComponent())
 	{
-		// Play SFX
 		if(BaseObjectActor)
+		{
+			// Play SFX
 			BaseObjectActor->PlayQuitInteractionSFX();
 
-		// Stop push or pull
-		if(BaseObjectActor)
+			// Stop push or pull
 			HitResult.GetComponent()->WakeAllRigidBodies();
-		PhysicsHandle->ReleaseComponent();
-		
+			HitResult.GetComponent()->SetPhysicsLinearVelocity(FVector::Zero());
+			PhysicsHandle->ReleaseComponent();
+			
+			// Make the movable object return to default color
+			BaseObjectActor->SetDefaultMaterial();
+		}
 	}
 	isPushing = false;
 }
+
+bool UGrabber::GetIsPushing() const
+{
+	if(isPushing) return true;
+	return false;
+}
+
+bool UGrabber::GetIsGrabbing() const
+{
+	if(isGrabbing) return true;
+	return false;
+}
+
 
 
 

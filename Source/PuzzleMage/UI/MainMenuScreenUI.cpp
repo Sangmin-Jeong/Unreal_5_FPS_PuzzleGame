@@ -5,15 +5,31 @@
 
 #include "CustomButton.h"
 #include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
 #include "PuzzleMage/MyBlueprintFunctionLibrary.h"
+#include "PuzzleMage/MyGameInstance.h"
 
 void UMainMenuScreenUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	NewGameButton->SetPlayFirstFocusSound(false);
-	NewGameButton->SetIsFocused(false);
-	NewGameButton->GetButton()->SetFocus();
+	if (const UMyGameInstance* GameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
+	{
+		if (GameInstance->HasSaveData())
+		{
+			ContinueButton->SetVisibility(ESlateVisibility::Visible);
+			ContinueButton->SetPlayFirstFocusSound(false);
+			ContinueButton->SetIsFocused(false);
+			ContinueButton->GetButton()->SetFocus();
+		}
+		else
+		{
+			ContinueButton->SetVisibility(ESlateVisibility::Collapsed);
+			NewGameButton->SetPlayFirstFocusSound(false);
+			NewGameButton->SetIsFocused(false);
+			NewGameButton->GetButton()->SetFocus();
+		}
+	}
 
 	BindOnClickedEvents();
 }
@@ -25,25 +41,54 @@ bool UMainMenuScreenUI::Initialize()
 
 void UMainMenuScreenUI::BindOnClickedEvents()
 {
+	ContinueButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnContinueButtonClicked);
 	NewGameButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnNewGameButtonClicked);
-	//LoadGameButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnLoadGameButtonClicked);
-	//AchievementsButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnAchievementsButtonClicked);
+	SelectLevelButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnSelectLevelButtonClicked);
+	AchievementsButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnAchievementsButtonClicked);
 	CreditsButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnCreditsButtonClicked);
-	//OptionsButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnOptionsButtonClicked);
+	OptionsButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnOptionsButtonClicked);
 	QuitButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnQuitButtonClicked);
 	ControlsButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnControlsButtonClicked);
+}
+
+void UMainMenuScreenUI::OnContinueButtonClicked()
+{
+	const UWorld* World = GetWorld();
+	if (const UMyGameInstance* GameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(World)))
+	{
+		if (ULevelDataAsset* LastLevelDataAsset = GameInstance->GetLastUnlockedLevelDataAsset())
+		{
+			UMyBlueprintFunctionLibrary::LoadLevelByReferenceAfterDelay(World, LastLevelDataAsset);
+		}
+	}
 }
 
 void UMainMenuScreenUI::OnNewGameButtonClicked()
 {
 	const UWorld* World = GetWorld();
-	UMyBlueprintFunctionLibrary::LoadLevelByNameAfterDelay(World, "LevelSelectScreen",false);
+	if (UMyGameInstance* GameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(World)))
+	{
+		GameInstance->ResetGameData();
+		ULevelDataAsset* FirstLevelDataAsset = GameInstance->GetFirstLevelDataAsset();
+		UMyBlueprintFunctionLibrary::LoadLevelByReferenceAfterDelay(World, FirstLevelDataAsset);
+	}
+}
+
+void UMainMenuScreenUI::OnSelectLevelButtonClicked()
+{
+	const UWorld* World = GetWorld();
+	UMyBlueprintFunctionLibrary::LoadLevelByNameAfterDelay(World, "LevelSelectScreen", false);
 }
 
 void UMainMenuScreenUI::OnCreditsButtonClicked()
 {
 	const UWorld* World = GetWorld();
-	UMyBlueprintFunctionLibrary::LoadLevelByNameAfterDelay(World, "CreditScreen",false);
+	UMyBlueprintFunctionLibrary::LoadLevelByNameAfterDelay(World, "CreditScreen", false);
+}
+
+void UMainMenuScreenUI::OnOptionsButtonClicked()
+{
+	UMyBlueprintFunctionLibrary::LoadLevelByNameAfterDelay(GetWorld(), "OptionsScreen", false);
 }
 
 void UMainMenuScreenUI::OnQuitButtonClicked()
@@ -53,6 +98,10 @@ void UMainMenuScreenUI::OnQuitButtonClicked()
 
 void UMainMenuScreenUI::OnControlsButtonClicked()
 {
-	UMyBlueprintFunctionLibrary::LoadLevelByNameAfterDelay(GetWorld(), "ControlsScreen",false);
+	UMyBlueprintFunctionLibrary::LoadLevelByNameAfterDelay(GetWorld(), "ControlsScreen", false);
 
+}
+void UMainMenuScreenUI::OnAchievementsButtonClicked()
+{
+	UMyBlueprintFunctionLibrary::LoadLevelByNameAfterDelay(GetWorld(), "AchievementsScreen", false);
 }

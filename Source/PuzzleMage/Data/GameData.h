@@ -6,42 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "GameData.generated.h"
 
-USTRUCT(BlueprintType)
-struct FLevelData
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString LevelName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UTexture2D> LevelIcon;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UWorld> MapReference;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bIsLocked;
-};
-
-USTRUCT(BlueprintType)
-struct FChapterData
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString ChapterName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UTexture2D> ChapterIcon;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bIsLocked;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FLevelData> Levels;
-};
-
+enum class EAudioType;
 /**
  * 
  */
@@ -50,13 +15,59 @@ class PUZZLEMAGE_API UGameData : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FChapterData> Chapters;
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TArray<class UChapterDataAsset*> Chapters;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	FString SaveSlotName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32 UserIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float MasterVolume;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float MusicVolume;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float SFXVolume;
+
+public:
+	UFUNCTION()
+	TArray<class UChapterDataAsset*> GetChapterDataAssets() const;
+
+	UFUNCTION()
+	class UChapterDataAsset* GetChapterDataAsset(int32 ChapterIndex) const;
+
+	UFUNCTION()
+	TArray<class ULevelDataAsset*> GetLevelDataAssets(int32 ChapterIndex) const;
+	
 	UFUNCTION()
 	void SetChapterIsLocked(int32 ChapterIndex, bool bIsLocked);
 
 	UFUNCTION()
 	void SetLevelIsLocked(int32 ChapterIndex, int32 LevelIndex, bool bIsLocked);
+
+	UFUNCTION()
+	FString GetSaveSlotName() const;
+
+	UFUNCTION()
+	int32 GetUserIndex() const;
+
+	UFUNCTION()
+	float GetMasterVolume() const;
+
+	UFUNCTION()
+	float GetMusicVolume() const;
+
+	UFUNCTION()
+	float GetSFXVolume() const;
+
+	UFUNCTION()
+	void SetAudioVolume(EAudioType AudioType, float Volume);
+
+	UFUNCTION()
+	void Reset();
 };

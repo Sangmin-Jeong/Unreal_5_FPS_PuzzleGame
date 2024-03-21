@@ -18,27 +18,37 @@ class PUZZLEMAGE_API ULevelSelectScreenUI : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 	virtual void NativePreConstruct() override;
-
+	virtual void NativeDestruct() override;
+	
+	void TabLeft();
+	void TabRight();
 private:
 	UPROPERTY(meta = (BindWidget))
-	class UButton* Chapter1Button;
+	class UTextBlock* ChapterTitle;
+	
+	UPROPERTY(meta = (BindWidget))
+	class UScrollBox* LevelButtonsContainer;
 
 	UPROPERTY(meta = (BindWidget))
-	class ULevelButton* Level1Button;
+	class UImage* TabLeftIcon;
 
 	UPROPERTY(meta = (BindWidget))
-	class ULevelButton* Level2Button;
+	class UImage* TabRightIcon;
 
-	UPROPERTY(meta = (BindWidget))
-	class ULevelButton* Level3Button;
+	UPROPERTY(EditDefaultsOnly, Category = "Defaults", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class ULevelButton> LevelButtonClass;
+	
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	UGameData* GameData;
 
-	UPROPERTY(meta = (BindWidget))
-	class ULevelButton* Level4Button;
+	TArray<class UChapterDataAsset*> ChapterDataAssets;
 
-	UPROPERTY(meta = (BindWidget))
-	class ULevelButton* Level5Button;
+	int CurrentChapterIndex;
 
 private:
 	UFUNCTION()
-	void BindOnClickedEvents();
+	void GenerateLevelButtons(int ChapterIndex);
+
+	UFUNCTION()
+	void UpdateChapterTitle();
 };

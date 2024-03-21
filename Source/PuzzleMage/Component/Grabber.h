@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
+#include "PuzzleMage/Object/BaseObjectActor.h"
 #include "Grabber.generated.h"
 
 
@@ -24,6 +25,9 @@ private:
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Floating Setting")
 	float HoldDistance = 400.0;
 
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Floating Setting")
+	float MinHoldDistance = 50.0;
+
 	//Push and pull setting
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Push Setting")
 	float MaxPushDistance = 100.0;
@@ -34,13 +38,14 @@ private:
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Push Setting")
 	float PushDistance = 100.0;
 
+	// Highlighting Actor
+	ABaseObjectActor* HighlightingActor;
+
 public:
 
 	
 	// Sets default values for this component's properties
 	UGrabber();
-
-
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -72,4 +77,7 @@ public:
 
 	// UPROPERTY(BlueprintCallable)
 	void StopPushPull();
+
+	bool GetIsPushing() const;
+	bool GetIsGrabbing() const;
 };
