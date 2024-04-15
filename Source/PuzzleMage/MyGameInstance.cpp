@@ -80,6 +80,7 @@ void UMyGameInstance::SaveGameData()
 {
 	//UMyBlueprintFunctionLibrary::SaveGameData(GameData);
 	UCustomSaveGame* SaveGameInstance = Cast<UCustomSaveGame>(UGameplayStatics::CreateSaveGameObject(UCustomSaveGame::StaticClass()));
+	GameData->UpdateTotalLevelsCompleted();
 	SaveGameInstance->GameData = GameData;
 	UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, GameData->GetSaveSlotName(), GameData->GetUserIndex(), OnSaveGameToSlotCompleteDelegate);
 }
@@ -89,6 +90,8 @@ void UMyGameInstance::ResetGameData()
 	if (GameData)
 	{
 		GameData->Reset();
+
+		SetShouldSaveGameData(true);
 	}
 }
 
@@ -166,12 +169,6 @@ ULevelDataAsset* UMyGameInstance::GetNextLevelDataAsset() const
 	{
 		if (CurrentChapterDataAsset->GetLevelDataAssets().IsValidIndex(LevelIndex + 1))
 		{
-			ULevelDataAsset* NextLevelDataAsset = CurrentChapterDataAsset->GetLevelDataAsset(LevelIndex + 1);
-			if (NextLevelDataAsset->GetIsLocked())
-			{
-				NextLevelDataAsset->SetLevelIsLocked(false);
-			}
-			
 			return CurrentChapterDataAsset->GetLevelDataAsset(LevelIndex + 1);
 		}
 
@@ -283,6 +280,16 @@ void UMyGameInstance::SetAudioVolume(EAudioType AudioType, float Volume)
 	default:
 		break;
 	}
+}
+
+bool UMyGameInstance::GetShouldSaveGameData() const
+{
+	return bShouldSaveGameData;
+}
+
+void UMyGameInstance::SetShouldSaveGameData(bool bShouldSave)
+{
+	bShouldSaveGameData = bShouldSave;
 }
 
 void UMyGameInstance::OnSaveGameToSlotComplete(const FString& SlotName, int32 UserIndex, const bool bSuccess)
@@ -429,6 +436,9 @@ void UMyGameInstance::EndLoadingScreen(UWorld* InLoaderWorld)
 		}
 	}
 
+	// Save Game Data if needed after loading screen
+	if (bShouldSaveGameData == false) return;
+
 	if (AutoSaveWidgetClass)
 	{
 		AutoSaveWidget = CreateWidget<UAutoSaveWidget>(this, AutoSaveWidgetClass);
@@ -436,6 +446,8 @@ void UMyGameInstance::EndLoadingScreen(UWorld* InLoaderWorld)
 	}
 	
 	SaveGameData();
+
+	bShouldSaveGameData = false;
 }
 
 UUIDataAsset* UMyGameInstance::GetUIDataAsset() const

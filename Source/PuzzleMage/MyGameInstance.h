@@ -58,10 +58,10 @@ public:
 	void SetActiveControllerId(int32 ControllerId);
 	int32 GetActiveControllerId() const;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	class UGameData* GetGameData() const;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	class UUIDataAsset* GetUIDataAsset() const;
 
 	UFUNCTION()
@@ -104,6 +104,12 @@ public:
 
 	UFUNCTION()
 	void SetAudioVolume(EAudioType AudioType, float Volume);
+
+	UFUNCTION(BlueprintCallable)
+	bool GetShouldSaveGameData() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetShouldSaveGameData(bool bShouldSave);
 private:
 	UPROPERTY(EditAnywhere, Category = "Game Data", meta = (AllowPrivateAccess = "true"))
 	UGameData* GameData;
@@ -140,6 +146,9 @@ private:
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	bool bShowAutoSaveTip;
+
+	UPROPERTY()
+	bool bShouldSaveGameData;
 
 	UFUNCTION()
 	void OnSaveGameToSlotComplete(const FString& SlotName, int32 UserIndex, const bool bSuccess);

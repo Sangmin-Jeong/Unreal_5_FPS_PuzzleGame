@@ -3,6 +3,8 @@
 
 #include "Door.h"
 
+#include "MyBlueprintFunctionLibrary.h"
+#include "MyGameInstance.h"
 #include "PuzzleMageGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -53,5 +55,13 @@ void ADoor::Tick(float DeltaTime)
 void ADoor::SetShouldMove(bool NewShouldMove)
 {
 	ShouldMove = NewShouldMove;
+}
+
+void ADoor::UpdateGameStats()
+{
+	if (const UMyGameInstance* GameInstance = UMyBlueprintFunctionLibrary::GetGameInstance(GetWorld()))
+	{
+		GameInstance->GetGameData()->GetGameStats()->IncrementTotalDoorsOpened();
+	}
 }
 

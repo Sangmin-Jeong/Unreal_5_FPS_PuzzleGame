@@ -32,6 +32,9 @@ private:
 	class UCustomButton* AchievementsButton;
 
 	UPROPERTY(meta = (BindWidget))
+	class UCustomButton* StatisticsButton;
+
+	UPROPERTY(meta = (BindWidget))
 	class UCustomButton* ControlsButton;
 
 	UPROPERTY(meta = (BindWidget))
@@ -42,7 +45,7 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	class UCustomButton* QuitButton;
-
+	
 	UFUNCTION()
 	void BindOnClickedEvents();
 
@@ -69,4 +72,7 @@ private:
 
 	UFUNCTION()
 	void OnAchievementsButtonClicked();
+
+	UFUNCTION()
+	void OnStatisticsButtonClicked();
 };

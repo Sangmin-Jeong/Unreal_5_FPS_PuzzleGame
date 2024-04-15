@@ -27,7 +27,7 @@ private:
 	class UTextBlock* ChapterTitle;
 	
 	UPROPERTY(meta = (BindWidget))
-	class UScrollBox* LevelButtonsContainer;
+	class UVerticalBox* LevelButtonsContainer;
 
 	UPROPERTY(meta = (BindWidget))
 	class UImage* TabLeftIcon;

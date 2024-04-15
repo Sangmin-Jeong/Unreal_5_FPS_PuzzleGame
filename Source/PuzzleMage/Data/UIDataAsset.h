@@ -25,7 +25,10 @@ class PUZZLEMAGE_API UUIDataAsset : public UPrimaryDataAsset
 
 public:
 	UFUNCTION(BlueprintCallable)
-	UTexture2D* GetIcon(EIconType IconType) const;	
+	UTexture2D* GetIcon(EIconType IconType) const;
+
+	UFUNCTION(BlueprintCallable)
+	UTexture2D* GetControlSchemeImage() const;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Icons", meta = (AllowPrivateAccess = "true"))
@@ -39,4 +42,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Icons", meta = (AllowPrivateAccess = "true"))
 	TSoftObjectPtr<UTexture2D> TabRightIcon;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Controls", meta = (AllowPrivateAccess = "true"))
+	TSoftObjectPtr<UTexture2D> ControlSchemeImage;
 };

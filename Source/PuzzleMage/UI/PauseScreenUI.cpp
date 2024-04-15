@@ -36,12 +36,6 @@ void UPauseScreenUI::ShowPauseMenuPanel()
 	
 	OptionsButton->SetIsFocused(false);
 	OptionsButton->GetButton()->SetFocus();
-
-	// Save the game
-	UMyGameInstance* GameInstance = UMyBlueprintFunctionLibrary::GetGameInstance(GetWorld());
-	if (GameInstance == nullptr) return;
-
-	GameInstance->SaveGameData();
 }
 
 void UPauseScreenUI::BindOnClickedEvents()

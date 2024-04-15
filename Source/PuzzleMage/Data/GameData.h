@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameStats.h"
 #include "Engine/DataAsset.h"
 #include "GameData.generated.h"
 
@@ -14,6 +15,8 @@ UCLASS()
 class PUZZLEMAGE_API UGameData : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
+
+	UGameData();
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -33,6 +36,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float SFXVolume;
+
+	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+	class UGameStats* GameStats;
 
 public:
 	UFUNCTION()
@@ -68,6 +74,15 @@ public:
 	UFUNCTION()
 	void SetAudioVolume(EAudioType AudioType, float Volume);
 
+	UFUNCTION(BlueprintCallable)
+	class UGameStats* GetGameStats() const;
+
+	UFUNCTION()
+	void UpdateTotalLevelsCompleted();
+
+	UFUNCTION()
+	int32 CalculateTotalLevelsCompleted();
+	
 	UFUNCTION()
 	void Reset();
 };

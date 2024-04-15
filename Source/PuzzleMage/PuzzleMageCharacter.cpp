@@ -72,7 +72,11 @@ void APuzzleMageCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if(StayStillAchievementUnlocked == false)
 	{
-		StayStillTimeCounter += DeltaTime;
+		if(StayStillTimeCounterStart)
+		{
+			StayStillTimeCounter += DeltaTime;
+		}
+		
 		if(StayStillTimeCounter > StayStillAchievementTime)
 		{
 			UMyBlueprintFunctionLibrary::UnlockAchievement(this,"Still");
@@ -144,6 +148,8 @@ void APuzzleMageCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 void APuzzleMageCharacter::Move(const FInputActionValue& Value)
 {
+	StayStillTimeCounterStart = true;
+	
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 

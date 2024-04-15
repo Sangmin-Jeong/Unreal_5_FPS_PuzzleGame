@@ -25,9 +25,6 @@ public:
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* RunningTimeText;
-
-	UPROPERTY(meta = (BindWidget))
 	class UCustomButton* OptionsButton;
 
 	UPROPERTY(meta = (BindWidget))

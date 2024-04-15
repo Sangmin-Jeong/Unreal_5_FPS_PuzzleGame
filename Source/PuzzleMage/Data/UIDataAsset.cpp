@@ -19,3 +19,8 @@ UTexture2D* UUIDataAsset::GetIcon(EIconType IconType) const
 			return nullptr;
 	}
 }
+
+UTexture2D* UUIDataAsset::GetControlSchemeImage() const
+{
+	return ControlSchemeImage.LoadSynchronous();
+}

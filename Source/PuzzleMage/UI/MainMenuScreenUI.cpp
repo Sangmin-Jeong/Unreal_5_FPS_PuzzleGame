@@ -45,6 +45,7 @@ void UMainMenuScreenUI::BindOnClickedEvents()
 	NewGameButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnNewGameButtonClicked);
 	SelectLevelButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnSelectLevelButtonClicked);
 	AchievementsButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnAchievementsButtonClicked);
+	StatisticsButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnStatisticsButtonClicked);
 	CreditsButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnCreditsButtonClicked);
 	OptionsButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnOptionsButtonClicked);
 	QuitButton->GetButton()->OnClicked.AddDynamic(this, &UMainMenuScreenUI::OnQuitButtonClicked);
@@ -69,8 +70,9 @@ void UMainMenuScreenUI::OnNewGameButtonClicked()
 	if (UMyGameInstance* GameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(World)))
 	{
 		GameInstance->ResetGameData();
-		ULevelDataAsset* FirstLevelDataAsset = GameInstance->GetFirstLevelDataAsset();
-		UMyBlueprintFunctionLibrary::LoadLevelByReferenceAfterDelay(World, FirstLevelDataAsset);
+		/*ULevelDataAsset* FirstLevelDataAsset = GameInstance->GetFirstLevelDataAsset();
+		UMyBlueprintFunctionLibrary::LoadLevelByReferenceAfterDelay(World, FirstLevelDataAsset);*/
+		UMyBlueprintFunctionLibrary::LoadLevelByNameAfterDelay(World, "SeanIntro");
 	}
 }
 
@@ -104,4 +106,9 @@ void UMainMenuScreenUI::OnControlsButtonClicked()
 void UMainMenuScreenUI::OnAchievementsButtonClicked()
 {
 	UMyBlueprintFunctionLibrary::LoadLevelByNameAfterDelay(GetWorld(), "AchievementsScreen", false);
+}
+
+void UMainMenuScreenUI::OnStatisticsButtonClicked()
+{
+	UMyBlueprintFunctionLibrary::LoadLevelByNameAfterDelay(GetWorld(), "StatisticsScreen", false);
 }

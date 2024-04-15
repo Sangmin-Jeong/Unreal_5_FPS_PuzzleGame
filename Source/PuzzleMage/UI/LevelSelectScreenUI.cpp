@@ -6,8 +6,8 @@
 #include "LevelButton.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
-#include "Components/ScrollBox.h"
-#include "Components/ScrollBoxSlot.h"
+#include "Components/VerticalBox.h"
+#include "Components/VerticalBoxSlot.h"
 #include "Components/TextBlock.h"
 #include "PuzzleMage/BasePlayerController.h"
 #include "PuzzleMage/MyBlueprintFunctionLibrary.h"
@@ -82,7 +82,6 @@ void ULevelSelectScreenUI::TabRight()
 
 void ULevelSelectScreenUI::GenerateLevelButtons(int ChapterIndex)
 {
-	LevelButtonsContainer->ScrollToStart();
 	LevelButtonsContainer->ClearChildren();
 	
 	TArray<ULevelDataAsset*> LevelDataAssets = ChapterDataAssets[ChapterIndex]->GetLevelDataAssets();
@@ -92,7 +91,9 @@ void ULevelSelectScreenUI::GenerateLevelButtons(int ChapterIndex)
 		ULevelDataAsset* LevelDataAsset = LevelDataAssets[i];
 		ULevelButton* LevelButton = CreateWidget<ULevelButton>(this, LevelButtonClass);
 		LevelButton->SetLevelDataAsset(LevelDataAsset);
-		UScrollBoxSlot* ScrollBoxSlot = Cast<UScrollBoxSlot>(LevelButtonsContainer->AddChild(LevelButton));
+		UVerticalBoxSlot* ContainerSlot = Cast<UVerticalBoxSlot>(LevelButtonsContainer->AddChild(LevelButton));
+		ContainerSlot->SetPadding(FMargin(0.f, 0.f, 0.f, 10.f));
+		ContainerSlot->SetSize(ESlateSizeRule::Fill);
 
 		if (i == 0)
 		{

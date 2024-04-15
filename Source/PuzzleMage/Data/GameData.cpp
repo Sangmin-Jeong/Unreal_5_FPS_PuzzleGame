@@ -4,8 +4,17 @@
 #include "GameData.h"
 
 #include "ChapterDataAsset.h"
+#include "GameStats.h"
 #include "LevelDataAsset.h"
 #include "PuzzleMage/MyGameInstance.h"
+
+UGameData::UGameData()
+{
+	if (UGameStats* GameStatsAsset = NewObject<UGameStats>())
+	{
+		GameStats = GameStatsAsset;
+	}
+}
 
 TArray<UChapterDataAsset*> UGameData::GetChapterDataAssets() const
 {
@@ -85,6 +94,37 @@ void UGameData::SetAudioVolume(EAudioType AudioType, float Volume)
 	}
 }
 
+UGameStats* UGameData::GetGameStats() const
+{
+	return GameStats;
+}
+
+void UGameData::UpdateTotalLevelsCompleted()
+{
+	if (GameStats == nullptr) return;
+	
+	const int32 TotalLevelsCompleted = CalculateTotalLevelsCompleted();
+	GameStats->SetTotalLevelsUnlocked(TotalLevelsCompleted);
+}
+
+int32 UGameData::CalculateTotalLevelsCompleted()
+{
+	int32 TotalLevelsCompleted = 0;
+
+	for (const UChapterDataAsset* ChapterDataAsset : Chapters)
+	{
+		for (const ULevelDataAsset* LevelDataAsset : ChapterDataAsset->GetLevelDataAssets())
+		{
+			if (!LevelDataAsset->GetIsLocked())
+			{
+				TotalLevelsCompleted++;
+			}
+		}
+	}
+
+	return TotalLevelsCompleted;
+}
+
 
 void UGameData::Reset()
 {
@@ -108,4 +148,6 @@ void UGameData::Reset()
 			}
 		}
 	}
+
+	GameStats = NewObject<UGameStats>();
 }

@@ -122,7 +122,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= Achievement, meta = (AllowPrivateAccess = "true"))
 	float StayStillAchievementTime = 30.0f;
 	float StayStillTimeCounter = 0;
-	
+	bool StayStillTimeCounterStart = false;
 	bool StayStillAchievementUnlocked = false;
 	bool PauseAchievementUnlocked = false;
 	bool PushAchievementUnlocked = false;

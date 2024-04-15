@@ -53,6 +53,8 @@ void UOptionsUI::OmMasterVolumeChanged(float Value)
 	if (GameInstance == nullptr) return;
 
 	GameInstance->SetAudioVolume(EAudioType::Master, Value);
+
+	GameInstance->SetShouldSaveGameData(true);
 }
 
 void UOptionsUI::OnMusicVolumeChanged(float Value)
@@ -61,6 +63,8 @@ void UOptionsUI::OnMusicVolumeChanged(float Value)
 	if (GameInstance == nullptr) return;
 
 	GameInstance->SetAudioVolume(EAudioType::Music, Value);
+
+	GameInstance->SetShouldSaveGameData(true);
 }
 
 void UOptionsUI::OnSFXVolumeChanged(float Value)
@@ -69,4 +73,6 @@ void UOptionsUI::OnSFXVolumeChanged(float Value)
 	if (GameInstance == nullptr) return;
 
 	GameInstance->SetAudioVolume(EAudioType::SFX, Value);
+
+	GameInstance->SetShouldSaveGameData(true);
 }

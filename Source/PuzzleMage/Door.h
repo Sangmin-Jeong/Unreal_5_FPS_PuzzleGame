@@ -41,6 +41,7 @@ private:
 
 	FVector OriginalLocation;
 
-	
+	UFUNCTION(BlueprintCallable)
+	void UpdateGameStats();
 
 };
