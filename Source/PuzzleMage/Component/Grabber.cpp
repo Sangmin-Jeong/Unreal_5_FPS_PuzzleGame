@@ -92,12 +92,12 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 			PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, GetComponentRotation());
 		}
 
-		if(isPushing)
-		{
-			// Pushing the Grabbed Object
-			FVector TargetLocation = GetComponentLocation() + GetForwardVector() * PushDistance;
-			PhysicsHandle->SetTargetLocation(TargetLocation);
-		}
+		// if(isPushing)
+		// {
+		// 	// Pushing the Grabbed Object
+		// 	FVector TargetLocation = GetComponentLocation() + GetForwardVector() * PushDistance;
+		// 	PhysicsHandle->SetTargetLocation(TargetLocation);
+		// }
 	}
 }
 
@@ -117,28 +117,28 @@ bool UGrabber::CheckLineTrace(FHitResult& OutHitResult) const
 	);
 }
 
-bool UGrabber::CheckLineTraceForPush(FHitResult& OutHitResult) const
-{
-	FVector Start = GetComponentLocation();
-	FVector End = Start + GetForwardVector() * MaxPushDistance;
-	//DrawDebugLine(GetWorld(), Start, End, FColor::Blue);
-
-	FCollisionShape Sphere = FCollisionShape::MakeSphere(PushRadius);
-	return GetWorld()->SweepSingleByChannel(
-		OutHitResult,
-		Start, End,
-		FQuat::Identity,
-		ECC_GameTraceChannel2,
-		Sphere
-	);
-}
+// bool UGrabber::CheckLineTraceForPush(FHitResult& OutHitResult) const
+// {
+// 	FVector Start = GetComponentLocation();
+// 	FVector End = Start + GetForwardVector() * MaxPushDistance;
+// 	//DrawDebugLine(GetWorld(), Start, End, FColor::Blue);
+//
+// 	FCollisionShape Sphere = FCollisionShape::MakeSphere(PushRadius);
+// 	return GetWorld()->SweepSingleByChannel(
+// 		OutHitResult,
+// 		Start, End,
+// 		FQuat::Identity,
+// 		ECC_GameTraceChannel2,
+// 		Sphere
+// 	);
+// }
 
 
 void UGrabber::Release()
 {
 	// If its a pushable object, ignore floating ability
 	ABaseObjectActor* BaseObjectActor = Cast<ABaseObjectActor>(HitResult.GetActor());
-	if (BaseObjectActor && BaseObjectActor->IsPushable()) return; 
+	// if (BaseObjectActor && BaseObjectActor->IsPushable()) return; 
 	
 	//UE_LOG(LogTemp, Display, TEXT(" RELEASE "));
 	if(PhysicsHandle->GetGrabbedComponent())
@@ -170,7 +170,7 @@ void UGrabber::Grab()
 	{
 		// If its a pushable object, ignore floating ability
 		ABaseObjectActor* BaseObjectActor = Cast<ABaseObjectActor>(HitResult.GetActor());
-		if (BaseObjectActor && BaseObjectActor->IsPushable()) return; 
+		// if (BaseObjectActor && BaseObjectActor->IsPushable()) return; 
 	
 		// Debug
 		// FString Name = HitResult.GetActor()->GetActorNameOrLabel();
@@ -198,87 +198,87 @@ void UGrabber::Grab()
 	}
 }
 
-void UGrabber::PushPull()
-{
-	if(CheckLineTraceForPush(HitResult))
-	{
-		ABaseObjectActor* BaseObjectActor = Cast<ABaseObjectActor>(HitResult.GetActor());
-		// If its not a pushable object, ignore it
+// void UGrabber::PushPull()
+// {
+// 	if(CheckLineTraceForPush(HitResult))
+// 	{
+// 		ABaseObjectActor* BaseObjectActor = Cast<ABaseObjectActor>(HitResult.GetActor());
+// 		// If its not a pushable object, ignore it
+//
+// 		if (!BaseObjectActor) return;
+// 		if (BaseObjectActor && !BaseObjectActor->IsPushable()) return;
+// 	
+// 		if(!BaseObjectActor->IsPushableRange())
+// 		{
+// 			if(PhysicsHandle->GetGrabbedComponent())
+// 			{
+// 				isPushing = false;
+// 				PhysicsHandle->ReleaseComponent();
+// 			}
+// 			return;
+// 		}
+// 		if(PhysicsHandle->GetGrabbedComponent()) return;
+// 		
+// 		// Debug
+// 		// FString Name = HitResult.GetActor()->GetActorNameOrLabel();
+// 		// UE_LOG(LogTemp, Display, TEXT("Hit Actor: %s"), *Name);
+// 		// DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 10, FColor::Blue, false, 5);
+// 		
+// 		if(BaseObjectActor)
+// 		{
+// 			BaseObjectActor->PlayInteractionVFX();
+// 			BaseObjectActor->PlayInteractionSFX();
+// 			BaseObjectActor->SetTransparentMaterial();
+// 			
+// 			// Push
+// 			UPrimitiveComponent* HitComponent = HitResult.GetComponent();
+// 			HitComponent->WakeAllRigidBodies();
+// 			PhysicsHandle->GrabComponentAtLocation(
+// 				HitComponent,
+// 				NAME_None,
+// 				HitResult.ImpactPoint
+// 			);
+// 		}
+// 		isPushing = true;
+// 	}
+// }
 
-		if (!BaseObjectActor) return;
-		if (BaseObjectActor && !BaseObjectActor->IsPushable()) return;
-	
-		if(!BaseObjectActor->IsPushableRange())
-		{
-			if(PhysicsHandle->GetGrabbedComponent())
-			{
-				isPushing = false;
-				PhysicsHandle->ReleaseComponent();
-			}
-			return;
-		}
-		if(PhysicsHandle->GetGrabbedComponent()) return;
-		
-		// Debug
-		// FString Name = HitResult.GetActor()->GetActorNameOrLabel();
-		// UE_LOG(LogTemp, Display, TEXT("Hit Actor: %s"), *Name);
-		// DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 10, FColor::Blue, false, 5);
-		
-		if(BaseObjectActor)
-		{
-			BaseObjectActor->PlayInteractionVFX();
-			BaseObjectActor->PlayInteractionSFX();
-			BaseObjectActor->SetTransparentMaterial();
-			
-			// Push
-			UPrimitiveComponent* HitComponent = HitResult.GetComponent();
-			HitComponent->WakeAllRigidBodies();
-			PhysicsHandle->GrabComponentAtLocation(
-				HitComponent,
-				NAME_None,
-				HitResult.ImpactPoint
-			);
-		}
-		isPushing = true;
-	}
-}
+// void UGrabber::StopPushPull()
+// {
+// 	if(!isPushing) return;
+// 	if(!PhysicsHandle->GetGrabbedComponent()) return;
+// 	
+// 	// If its not a pushable object, ignore it
+// 	ABaseObjectActor* BaseObjectActor = Cast<ABaseObjectActor>(HitResult.GetActor());
+// 	if (!BaseObjectActor) return;
+// 	if (BaseObjectActor && !BaseObjectActor->IsPushable()) return;
+// 	
+// 	UE_LOG(LogTemp, Display, TEXT(" Stop Pushing"));
+// 	if(PhysicsHandle->GetGrabbedComponent())
+// 	{
+// 		if(BaseObjectActor)
+// 		{
+// 			// Play SFX
+// 			BaseObjectActor->PlayQuitInteractionSFX();
+//
+// 			// Stop push or pull
+// 			HitResult.GetComponent()->WakeAllRigidBodies();
+// 			HitResult.GetComponent()->SetPhysicsLinearVelocity(FVector::Zero());
+// 			PhysicsHandle->ReleaseComponent();
+// 			
+// 			// Make the movable object return to default color
+// 			BaseObjectActor->SetDefaultMaterial();
+// 		}
+// 	}
+// 	isPushing = false;
+// }
 
-void UGrabber::StopPushPull()
-{
-	if(!isPushing) return;
-	if(!PhysicsHandle->GetGrabbedComponent()) return;
-	
-	// If its not a pushable object, ignore it
-	ABaseObjectActor* BaseObjectActor = Cast<ABaseObjectActor>(HitResult.GetActor());
-	if (!BaseObjectActor) return;
-	if (BaseObjectActor && !BaseObjectActor->IsPushable()) return;
-	
-	UE_LOG(LogTemp, Display, TEXT(" Stop Pushing"));
-	if(PhysicsHandle->GetGrabbedComponent())
-	{
-		if(BaseObjectActor)
-		{
-			// Play SFX
-			BaseObjectActor->PlayQuitInteractionSFX();
-
-			// Stop push or pull
-			HitResult.GetComponent()->WakeAllRigidBodies();
-			HitResult.GetComponent()->SetPhysicsLinearVelocity(FVector::Zero());
-			PhysicsHandle->ReleaseComponent();
-			
-			// Make the movable object return to default color
-			BaseObjectActor->SetDefaultMaterial();
-		}
-	}
-	isPushing = false;
-}
-
-bool UGrabber::GetIsPushing() const
-{
-	if(isPushing) return true;
-	return false;
-}
-
+// bool UGrabber::GetIsPushing() const
+// {
+// 	if(isPushing) return true;
+// 	return false;
+// }
+//
 bool UGrabber::GetIsGrabbing() const
 {
 	if(isGrabbing) return true;

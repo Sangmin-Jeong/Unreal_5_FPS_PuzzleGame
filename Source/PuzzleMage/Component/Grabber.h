@@ -29,14 +29,14 @@ private:
 	float MinHoldDistance = 50.0;
 
 	//Push and pull setting
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Push Setting")
-	float MaxPushDistance = 100.0;
-
-	UPROPERTY(EditAnywhere)
-	float PushRadius = 100.0;
-
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Push Setting")
-	float PushDistance = 100.0;
+	// UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Push Setting")
+	// float MaxPushDistance = 100.0;
+	//
+	// UPROPERTY(EditAnywhere)
+	// float PushRadius = 100.0;
+	//
+	// UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Push Setting")
+	// float PushDistance = 100.0;
 
 	// Highlighting Actor
 	ABaseObjectActor* HighlightingActor;
@@ -55,7 +55,7 @@ protected:
 	UPhysicsHandleComponent* PhysicsHandle;
 
 	bool isGrabbing;
-	bool isPushing;
+	// bool isPushing;
 
 public:	
 	// Called every frame
@@ -63,7 +63,7 @@ public:
 	
 	bool CheckLineTrace(FHitResult& OutHitResult) const;
 	
-	bool CheckLineTraceForPush(FHitResult& OutHitResult) const;
+	// bool CheckLineTraceForPush(FHitResult& OutHitResult) const;
 	
 	
 	// UPROPERTY(BlueprintCallable)
@@ -73,11 +73,11 @@ public:
 	void Grab();
 
 	// UPROPERTY(BlueprintCallable)
-	void PushPull();
-
-	// UPROPERTY(BlueprintCallable)
-	void StopPushPull();
-
-	bool GetIsPushing() const;
+	// void PushPull();
+	//
+	// // UPROPERTY(BlueprintCallable)
+	// void StopPushPull();
+	//
+	// bool GetIsPushing() const;
 	bool GetIsGrabbing() const;
 };

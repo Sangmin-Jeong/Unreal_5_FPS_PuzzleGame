@@ -53,9 +53,9 @@ class APuzzleMageCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* PauseAction;
 
-	/** Push and Pull Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputAction* PushPullAction;
+	// /** Push and Pull Input Action */
+	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	// class UInputAction* PushPullAction;
 
 	/** Back Right Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
@@ -65,9 +65,9 @@ class APuzzleMageCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* BackActionBottom;
 
-	/** Change Camera View Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputAction* ChangeCameraAction;
+	// /** Change Camera View Input Action */
+	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	// class UInputAction* ChangeCameraAction;
 	
 public:
 	APuzzleMageCharacter();
@@ -98,12 +98,12 @@ public:
 	FOnPausedDelegate OnPausedDelegate;
 	FOnUnPausedDelegate OnUnPausedDelegate;
 
-
-	UFUNCTION(BlueprintCallable, Category = "Change Camera")
-	void ChangeCameraView();
-
-	UFUNCTION(BlueprintCallable, Category = "Change Camera")
-	void ResetCameraView();
+	//
+	// UFUNCTION(BlueprintCallable, Category = "Change Camera")
+	// void ChangeCameraView();
+	//
+	// UFUNCTION(BlueprintCallable, Category = "Change Camera")
+	// void ResetCameraView();
 
 	UFUNCTION(BlueprintCallable, Category = "Change Camera")
 	void ActiveCineCamera();
@@ -125,7 +125,7 @@ public:
 	bool StayStillTimeCounterStart = false;
 	bool StayStillAchievementUnlocked = false;
 	bool PauseAchievementUnlocked = false;
-	bool PushAchievementUnlocked = false;
+	// bool PushAchievementUnlocked = false;
 	bool GrabAchievementUnlocked = false;
 	bool MagicRuneAchievementUnlocked = false;
 
@@ -148,18 +148,18 @@ protected:
 	/** Called for Pause input */
 	void Pause();
 
-	/** Called for Push and pull input */
-	void PushPull();
-
-	/** Called for stop Push and pull input */
-	void StopPushPull();
+	// /** Called for Push and pull input */
+	// void PushPull();
+	//
+	// /** Called for stop Push and pull input */
+	// void StopPushPull();
 
 	/** Called for Back input */
 	void Back();
 
 	/** Called for Change camera input */
-	void ChangeToMapCamera();
-	void ChangeToDefaultCamera();
+	// void ChangeToMapCamera();
+	// void ChangeToDefaultCamera();
 
 protected:
 	// APawn interface

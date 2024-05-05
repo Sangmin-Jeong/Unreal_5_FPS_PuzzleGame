@@ -33,16 +33,16 @@ ABaseObjectActor::ABaseObjectActor()
 	PostProcessComponent = CreateDefaultSubobject<UPostProcessComponent>(TEXT("Post Process Component"));
 	PostProcessComponent->SetupAttachment(GetRootComponent());
 	
-	bIsPushable = false;
-	bIsPushableRange = false;
+	// bIsPushable = false;
+	// bIsPushableRange = false;
 }
 
 // Called when the game starts or when spawned
 void ABaseObjectActor::BeginPlay()
 {
 	Super::BeginPlay();
-	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ABaseObjectActor::OnBoxOverlap);
-	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ABaseObjectActor::EndBoxOverlap);
+	// BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ABaseObjectActor::OnBoxOverlap);
+	// BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ABaseObjectActor::EndBoxOverlap);
 	
 	StaticMeshComponent->SetSimulatePhysics(true);
 	StaticMeshComponent->SetMassScale(NAME_None,5);
@@ -106,55 +106,55 @@ void ABaseObjectActor::UnHighlighting()
 	StaticMeshComponent->SetRenderCustomDepth(false);
 }
 
-void ABaseObjectActor::OnBoxOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor,
-                                    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	AActor* Actor = Cast<APuzzleMageCharacter>(OtherActor);
-	if(Actor)
-	{
-		//UE_LOG(LogTemp, Display, TEXT("PLAYER IN     - Box!!!!"));
-	
-		if(IsPushable())
-		{
-			SetPushableRange(true);
-		}
-	}
-}
+// void ABaseObjectActor::OnBoxOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor,
+//                                     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+// {
+// 	AActor* Actor = Cast<APuzzleMageCharacter>(OtherActor);
+// 	if(Actor)
+// 	{
+// 		//UE_LOG(LogTemp, Display, TEXT("PLAYER IN     - Box!!!!"));
+// 	
+// 		if(IsPushable())
+// 		{
+// 			SetPushableRange(true);
+// 		}
+// 	}
+// }
 
-void ABaseObjectActor::EndBoxOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	AActor* Actor = Cast<APuzzleMageCharacter>(OtherActor);
-	if(Actor)
-	{
-		//UE_LOG(LogTemp, Display, TEXT("PLAYER OUT    - Box!!!!"));
-		
-		if(IsPushable())
-		{
-			SetPushableRange(false);
-		}
-	}
-}
+// void ABaseObjectActor::EndBoxOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor,
+// 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+// {
+// 	AActor* Actor = Cast<APuzzleMageCharacter>(OtherActor);
+// 	if(Actor)
+// 	{
+// 		//UE_LOG(LogTemp, Display, TEXT("PLAYER OUT    - Box!!!!"));
+// 		
+// 		if(IsPushable())
+// 		{
+// 			SetPushableRange(false);
+// 		}
+// 	}
+// }
 
-void ABaseObjectActor::SetPushableRange(bool newValue)
-{
-	bIsPushableRange = newValue;
-
-	if(bIsPushableRange)
-	UE_LOG(LogTemp, Display, TEXT("Within PushableRange "));
-
-	if(!bIsPushableRange)
-		UE_LOG(LogTemp, Display, TEXT("Out of PushableRange "));
-}
-void ABaseObjectActor::SetTransparentMaterial()
-{
-	StaticMeshComponent->SetMaterial(0,TransparentMaterial);
-}
-
-void ABaseObjectActor::SetDefaultMaterial()
-{
-	StaticMeshComponent->SetMaterial(0,DefaultMaterial);
-}
+// void ABaseObjectActor::SetPushableRange(bool newValue)
+// {
+// 	bIsPushableRange = newValue;
+//
+// 	if(bIsPushableRange)
+// 	UE_LOG(LogTemp, Display, TEXT("Within PushableRange "));
+//
+// 	if(!bIsPushableRange)
+// 		UE_LOG(LogTemp, Display, TEXT("Out of PushableRange "));
+// }
+// void ABaseObjectActor::SetTransparentMaterial()
+// {
+// 	StaticMeshComponent->SetMaterial(0,TransparentMaterial);
+// }
+//
+// void ABaseObjectActor::SetDefaultMaterial()
+// {
+// 	StaticMeshComponent->SetMaterial(0,DefaultMaterial);
+// }
 
 
 

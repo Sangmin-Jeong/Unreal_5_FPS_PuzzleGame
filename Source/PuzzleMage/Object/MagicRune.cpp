@@ -1,13 +1,15 @@
 // Puzzle Mage by Arctic Moose Games
-
-
 #include "MagicRune.h"
-
 #include "PuzzleMage/MyBlueprintFunctionLibrary.h"
 #include "PuzzleMage/PuzzleMageCharacter.h"
 
-
-
+AMagicRune::AMagicRune()
+{
+	ActivationStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Activation Static Mesh"));
+	ActivationStaticMesh->SetupAttachment(GetRootComponent());
+	SubActivationStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sub Activation Static Mesh"));
+	SubActivationStaticMesh->SetupAttachment(GetRootComponent());
+}
 
 void AMagicRune::BeginPlay()
 {
@@ -45,7 +47,8 @@ void AMagicRune::NotifyActorBeginOverlap(AActor* OtherActor)
 			GameMode->NextMagicRuneIndex++;
 			// 2. Set Activated , Change Material
 			IsActive = true;
-			StaticMeshComponent->SetMaterial(0,ActiveMaterial);
+			ActivationStaticMesh->SetMaterial(0,ActiveMaterial);
+			SubActivationStaticMesh->SetMaterial(0,ActiveMaterial);
 			// 3. Play Sound , Particle
 			PlayInteractionSFX();
 			PlayInteractionVFX();

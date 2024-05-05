@@ -11,12 +11,22 @@
 /**
  * 
  */
+
+class UStaticMeshComponent;
+
 UCLASS()
 class PUZZLEMAGE_API AMagicRune : public ABaseObjectActor
 {
 	GENERATED_BODY()
 	
 public:
+	AMagicRune();
+	
+	//Static Mesh
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Static Mesh")
+	UStaticMeshComponent* ActivationStaticMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Static Mesh")
+	UStaticMeshComponent* SubActivationStaticMesh;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"), Category="Magic Rune Properties")
 	int MagicRuneIndex;

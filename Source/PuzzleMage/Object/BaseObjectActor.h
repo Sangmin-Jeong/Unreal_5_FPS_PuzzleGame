@@ -44,11 +44,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Post Process Component")
 	UPostProcessComponent* PostProcessComponent;
 	
-	UFUNCTION()
-	virtual void OnBoxOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION()
-	virtual void EndBoxOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	
+	// UFUNCTION()
+	// virtual void OnBoxOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	// UFUNCTION()
+	// virtual void EndBoxOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	//
 	// SFX
 	UFUNCTION(BlueprintCallable)
 	void PlayInteractionSFX();
@@ -70,21 +70,21 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UnHighlighting();
 
-	//For movable object
-	UFUNCTION(BlueprintCallable, Category = "Pushable")
-	bool IsPushable() { return bIsPushable; }
-	
-	UFUNCTION(BlueprintCallable, Category = "Pushable")
-	bool IsPushableRange() {return bIsPushableRange; }
-	
-	UFUNCTION(BlueprintCallable, Category = "Pushable")
-	void SetPushableRange(bool newValue);
-
-	UFUNCTION(BlueprintCallable, Category = "Pushable")
-	void SetTransparentMaterial();
-
-	UFUNCTION(BlueprintCallable, Category = "Pushable")
-	void SetDefaultMaterial();
+	// //For movable object
+	// UFUNCTION(BlueprintCallable, Category = "Pushable")
+	// bool IsPushable() { return bIsPushable; }
+	//
+	// UFUNCTION(BlueprintCallable, Category = "Pushable")
+	// bool IsPushableRange() {return bIsPushableRange; }
+	//
+	// UFUNCTION(BlueprintCallable, Category = "Pushable")
+	// void SetPushableRange(bool newValue);
+	//
+	// UFUNCTION(BlueprintCallable, Category = "Pushable")
+	// void SetTransparentMaterial();
+	//
+	// UFUNCTION(BlueprintCallable, Category = "Pushable")
+	// void SetDefaultMaterial();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Base Object Properties")
 	float InitialZPosition;
@@ -100,11 +100,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"), Category="SFX")
 	TObjectPtr<USoundCue> QuitInteractionSoundQue;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pushable")
-	bool bIsPushable;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PushableRange")
-	bool bIsPushableRange;
+	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pushable")
+	// bool bIsPushable;
+	//
+	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PushableRange")
+	// bool bIsPushableRange;
 
 
 

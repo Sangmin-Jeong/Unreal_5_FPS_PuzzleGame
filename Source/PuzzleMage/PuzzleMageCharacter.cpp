@@ -121,9 +121,9 @@ void APuzzleMageCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &APuzzleMageCharacter::Pause);
 		
 		//Push pull Key Press
-		EnhancedInputComponent->BindAction(PushPullAction, ETriggerEvent::Ongoing, this, &APuzzleMageCharacter::PushPull);
-		EnhancedInputComponent->BindAction(PushPullAction, ETriggerEvent::Completed, this, &APuzzleMageCharacter::StopPushPull);
-		EnhancedInputComponent->BindAction(PushPullAction, ETriggerEvent::Canceled, this, &APuzzleMageCharacter::StopPushPull);
+		// EnhancedInputComponent->BindAction(PushPullAction, ETriggerEvent::Ongoing, this, &APuzzleMageCharacter::PushPull);
+		// EnhancedInputComponent->BindAction(PushPullAction, ETriggerEvent::Completed, this, &APuzzleMageCharacter::StopPushPull);
+		// EnhancedInputComponent->BindAction(PushPullAction, ETriggerEvent::Canceled, this, &APuzzleMageCharacter::StopPushPull);
 
 #if PLATFORM_SWITCH
 		EnhancedInputComponent->BindAction(BackActionBottom, ETriggerEvent::Completed, this, &APuzzleMageCharacter::Back);
@@ -131,9 +131,9 @@ void APuzzleMageCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 		EnhancedInputComponent->BindAction(BackActionRight, ETriggerEvent::Completed, this, &APuzzleMageCharacter::Back);
 #endif
 
-		//Change Camera Key Press
-		EnhancedInputComponent->BindAction(ChangeCameraAction, ETriggerEvent::Triggered, this, &APuzzleMageCharacter::ChangeToMapCamera);
-		EnhancedInputComponent->BindAction(ChangeCameraAction, ETriggerEvent::Completed, this, &APuzzleMageCharacter::ChangeToDefaultCamera);
+		// //Change Camera Key Press
+		// EnhancedInputComponent->BindAction(ChangeCameraAction, ETriggerEvent::Triggered, this, &APuzzleMageCharacter::ChangeToMapCamera);
+		// EnhancedInputComponent->BindAction(ChangeCameraAction, ETriggerEvent::Completed, this, &APuzzleMageCharacter::ChangeToDefaultCamera);
 	}
 
 	// Bind to HUD
@@ -155,18 +155,21 @@ void APuzzleMageCharacter::Move(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
-		//If player is pushing, disable left and right movement
-		if(Grabber->GetIsPushing())
-		{
-			AddMovementInput(GetActorForwardVector(), MovementVector.Y);
-		}
-
-		else
-		{
-			// add movement
-			AddMovementInput(GetActorForwardVector(), MovementVector.Y);
-			AddMovementInput(GetActorRightVector(), MovementVector.X);
-		}
+		// //If player is pushing, disable left and right movement
+		// if(Grabber->GetIsPushing())
+		// {
+		// 	AddMovementInput(GetActorForwardVector(), MovementVector.Y);
+		// }
+		//
+		// else
+		// {
+		// 	// add movement
+		// 	AddMovementInput(GetActorForwardVector(), MovementVector.Y);
+		// 	AddMovementInput(GetActorRightVector(), MovementVector.X);
+		// }
+		// add movement
+		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
+		AddMovementInput(GetActorRightVector(), MovementVector.X);
 	}
 	ResetStillAchievementTimer();
 }
@@ -209,7 +212,7 @@ void APuzzleMageCharacter::Release()
 
 void APuzzleMageCharacter::Pause()
 {
-	if(Grabber->GetIsPushing()) return;
+	// if(Grabber->GetIsPushing()) return;
 	
 	OnPausedDelegate.ExecuteIfBound();
 
@@ -221,26 +224,26 @@ void APuzzleMageCharacter::Pause()
 	ResetStillAchievementTimer();
 }
 
-void APuzzleMageCharacter::PushPull()
-{
-	Grabber->PushPull();
+// void APuzzleMageCharacter::PushPull()
+// {
+// 	Grabber->PushPull();
+//
+// 	if(!PushAchievementUnlocked)
+// 	{
+// 		if(Grabber->GetIsPushing())
+// 		{
+// 			UMyBlueprintFunctionLibrary::UnlockAchievement(this, "Push");
+// 			PushAchievementUnlocked = true;
+// 		}
+// 	}
+// 	ResetStillAchievementTimer();
+// }
 
-	if(!PushAchievementUnlocked)
-	{
-		if(Grabber->GetIsPushing())
-		{
-			UMyBlueprintFunctionLibrary::UnlockAchievement(this, "Push");
-			PushAchievementUnlocked = true;
-		}
-	}
-	ResetStillAchievementTimer();
-}
-
-void APuzzleMageCharacter::StopPushPull()
-{
-	Grabber->StopPushPull();
-	ResetStillAchievementTimer();
-}
+// void APuzzleMageCharacter::StopPushPull()
+// {
+// 	Grabber->StopPushPull();
+// 	ResetStillAchievementTimer();
+// }
 
 void APuzzleMageCharacter::Back()
 {
@@ -248,30 +251,30 @@ void APuzzleMageCharacter::Back()
 	ResetStillAchievementTimer();
 }
 
-void APuzzleMageCharacter::ChangeToMapCamera()
-{
-	if(Grabber->GetIsPushing()) return;
-	
-	//Change to map camera
-	ChangeCameraView();
-}
+// void APuzzleMageCharacter::ChangeToMapCamera()
+// {
+// 	// if(Grabber->GetIsPushing()) return;
+// 	
+// 	//Change to map camera
+// 	ChangeCameraView();
+// }
 
-void APuzzleMageCharacter::ChangeToDefaultCamera()
-{
-	if(Grabber->GetIsPushing()) return;
-	
-	//Change back to 1st person camera view
-	ResetCameraView();
-	ResetStillAchievementTimer();
-}
+// void APuzzleMageCharacter::ChangeToDefaultCamera()
+// {
+// 	if(Grabber->GetIsPushing()) return;
+// 	
+// 	//Change back to 1st person camera view
+// 	ResetCameraView();
+// 	ResetStillAchievementTimer();
+// }
 
-void APuzzleMageCharacter::ChangeCameraView()
-{
-}
-
-void APuzzleMageCharacter::ResetCameraView()
-{
-}
+// void APuzzleMageCharacter::ChangeCameraView()
+// {
+// }
+//
+// void APuzzleMageCharacter::ResetCameraView()
+// {
+// }
 
 void APuzzleMageCharacter::ActiveCineCamera()
 {
@@ -280,7 +283,7 @@ void APuzzleMageCharacter::ActiveCineCamera()
 	if(CineCamera)
 	{
 		// Disable Input and Release Block
-		StopPushPull();
+		// StopPushPull();
 		Release();
 		DisableInput(UMyBlueprintFunctionLibrary::GetActivePlayerController(GetWorld()));
 
