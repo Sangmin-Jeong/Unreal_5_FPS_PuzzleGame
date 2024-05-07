@@ -30,6 +30,10 @@
 		{
 			"Name": "AchievementSystem",
 			"Enabled": true
+		},
+		{
+			"Name": "UltimateLevelArtTool",
+			"Enabled": true
 		}
 	]
 }
