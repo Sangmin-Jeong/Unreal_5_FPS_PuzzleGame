@@ -13,6 +13,7 @@
  */
 
 class UStaticMeshComponent;
+class ADoorClass;
 
 UCLASS()
 class PUZZLEMAGE_API AMagicRune : public ABaseObjectActor
@@ -42,6 +43,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"), Category="Magic Rune Properties")
 	TObjectPtr<ADoor> Door;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"), Category="Magic Rune Properties")
+	TObjectPtr<ADoorClass> DoorClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"), Category="Achievement")
 	bool MagicRuneAchievementUnlocked = false;

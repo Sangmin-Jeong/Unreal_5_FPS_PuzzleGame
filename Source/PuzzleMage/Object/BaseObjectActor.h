@@ -30,11 +30,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Static Mesh")
 	UStaticMeshComponent* StaticMeshComponent;
 
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Movable Object Properties")
-	TObjectPtr<UMaterialInterface> TransparentMaterial;
-
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Movable Object Properties")
-	TObjectPtr<UMaterialInterface> DefaultMaterial;
+	// UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Movable Object Properties")
+	// TObjectPtr<UMaterialInterface> TransparentMaterial;
+	//
+	// UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Movable Object Properties")
+	// TObjectPtr<UMaterialInterface> DefaultMaterial;
 
 	// Particle Effect
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Particle System Component")

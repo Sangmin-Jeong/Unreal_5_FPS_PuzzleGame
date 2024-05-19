@@ -6,6 +6,7 @@
 #include "MyGameInstance.h"
 #include "PuzzleMageCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Object/DoorClass.h"
 #include "Object/MagicRune.h"
 #include "UI/BaseHUD.h"
 #include "UObject/ConstructorHelpers.h"
@@ -48,9 +49,17 @@ void APuzzleMageGameMode::OpenDoor()
 {
 	if(!bIsAllMagicRuneActivated) return;
 
-	if(Door)
+	// if(Door)
+	// {
+	// 	Door->SetShouldMove(true);
+	// 	
+	// 	ExecuteFinalDoorDelegate();
+	// }
+
+	if(DoorClass)
 	{
-		Door->SetShouldMove(true);
+		DoorClass->OpenDoor();
+		DoorClass->GetTimeline().Play();
 		
 		ExecuteFinalDoorDelegate();
 	}
@@ -58,9 +67,13 @@ void APuzzleMageGameMode::OpenDoor()
 
 void APuzzleMageGameMode::ExecuteFinalDoorDelegate()
 {
-	if(Door)
-	if(Door->bIsFinalDoor)
-		FinalDoorOpenedDelegate.ExecuteIfBound();
+	// if(Door)
+	// if(Door->bIsFinalDoor)
+	// 	FinalDoorOpenedDelegate.ExecuteIfBound();
+
+	if(DoorClass)
+		if(DoorClass->bIsFinalDoor)
+			FinalDoorOpenedDelegate.ExecuteIfBound();
 }
 
 void APuzzleMageGameMode::InitializeMagicRune()

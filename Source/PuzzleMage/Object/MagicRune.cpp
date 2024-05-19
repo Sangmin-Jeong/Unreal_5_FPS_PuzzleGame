@@ -14,10 +14,16 @@ AMagicRune::AMagicRune()
 void AMagicRune::BeginPlay()
 {
 	GameMode = Cast<APuzzleMageGameMode>(GetWorld()->GetAuthGameMode());
+	// if(GameMode)
+	// {
+	// 	GameMode->MagicRuneActors.Add(this);
+	// 	GameMode->Door = Door;
+	// }
+
 	if(GameMode)
 	{
 		GameMode->MagicRuneActors.Add(this);
-		GameMode->Door = Door;
+		GameMode->DoorClass = DoorClass;
 	}
 }
 

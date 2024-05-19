@@ -9,6 +9,7 @@
 DECLARE_DELEGATE(FOnFinalDoorOpenedSignature)
 
 class ADoor;
+class ADoorClass;
 
 UCLASS(minimalapi)
 class APuzzleMageGameMode : public ABaseGameMode
@@ -31,6 +32,9 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<ADoor> Door;
+
+	UPROPERTY()
+	TObjectPtr<ADoorClass> DoorClass;
 	
 	UFUNCTION()
 	void OpenDoor();
